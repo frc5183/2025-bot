@@ -10,32 +10,34 @@ import org.frc5183.subsystems.VisionSubsystem
  */
 // todo: make sure this doesn't run during teleop if we're not holding a button otherwise its not allowed by FRC rules
 class AutoAimCommand : Command() {
-    /**
-     * Whether are not there are no targets in view.
-     */
-    private var noVisibleTargets: Boolean = false
+    private lateinit var aimCommand: AimCommand
+    private var finished: Boolean = false
 
     init {
         addRequirements(VisionSubsystem)
     }
 
-    override fun initialize() {}
-
-    override fun execute() {
+    override fun initialize() {
         if (VisionSubsystem.visibleTargets.isEmpty()) {
-            noVisibleTargets = true
+            finished = true
         } else {
             for (camera in VisionSubsystem.cameras) {
-                val target = VisionSubsystem.getNearestTarget(camera) ?: continue
-                AimCommand(target).schedule()
-                return
+                aimCommand = AimCommand(VisionSubsystem.getNearestTarget(camera) ?: continue)
             }
 
-            noVisibleTargets = true
+            finished = true
         }
     }
 
-    override fun isFinished(): Boolean = !noVisibleTargets
+    override fun execute() {
+        if (!aimCommand.isScheduled) {
+            aimCommand.schedule()
+        }
+    }
 
-    override fun end(interrupted: Boolean) {}
+    override fun isFinished(): Boolean = finished
+
+    override fun end(interrupted: Boolean) {
+        finished = true
+    }
 }

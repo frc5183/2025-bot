@@ -1,23 +1,25 @@
 package org.frc5183
 
+import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.pathfinding.Pathfinding
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.TimedRobot
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.Field2d
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
+import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
-import org.frc5183.commands.drive.TeleopDriveCommand
+import org.frc5183.commands.drive.DriveToPose2d
 import org.frc5183.constants.Config
 import org.frc5183.constants.Controls
 import org.frc5183.subsystems.SwerveDriveSubsystem
+import org.frc5183.subsystems.VisionSubsystem
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -41,7 +43,7 @@ object Robot : TimedRobot() {
     private var selectedAutoMode = AutoMode.default
     private val autoModeChooser =
         SendableChooser<AutoMode>().also { chooser ->
-            AutoMode.values().forEach { chooser.addOption(it.optionName, it) }
+            AutoMode.entries.forEach { chooser.addOption(it.optionName, it) }
             chooser.setDefaultOption(AutoMode.default.optionName, AutoMode.default)
         }
 
@@ -74,9 +76,35 @@ object Robot : TimedRobot() {
         SmartDashboard.putData("Auto choices", autoModeChooser)
         SmartDashboard.putData("Field", field)
 
+        CommandScheduler.getInstance().registerSubsystem(
+            SwerveDriveSubsystem,
+            VisionSubsystem,
+        )
+
+        // todo debug sets the pose2d to into the field in sim
+        SwerveDriveSubsystem.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
+
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.
         Pathfinding.setPathfinder(LocalADStarAK())
+
+        CommandScheduler.getInstance().onCommandInitialize {
+            println("Command initialized: ${it.name}")
+        }
+
+        CommandScheduler.getInstance().onCommandExecute {
+            if (it.name != "TeleopDriveCommand") {
+                println("Command executed: ${it.name}")
+            }
+        }
+
+        CommandScheduler.getInstance().onCommandFinish {
+            println("Command finished: ${it.name}")
+        }
+
+        CommandScheduler.getInstance().onCommandInterrupt { it: Command ->
+            println("Command interrupted: ${it.name}")
+        }
     }
 
     override fun robotPeriodic() {
@@ -94,25 +122,39 @@ object Robot : TimedRobot() {
     override fun autonomousPeriodic() = selectedAutoMode.periodicFunction.invoke()
 
     private fun autoMode1() {
-        TODO("Write custom auto mode 1")
+        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))).schedule()
+        /*
+        val pose = Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))
+
+        AutoBuilder
+            .pathfindThenFollowPath(
+                PathPlannerPath(
+                    PathPlannerPath.waypointsFromPoses(
+                        Pose2d(SwerveDriveSubsystem.pose.translation, Rotation2d.kZero),
+                        Pose2d(pose.translation, Rotation2d.kZero),
+                    ),
+                    AutoConstants.PATH_CONSTRAINTS,
+                    null,
+                    GoalEndState(0.0, pose.rotation),
+                ),
+                AutoConstants.PATH_CONSTRAINTS,
+            ).schedule()
+         */
     }
 
     private fun autoMode2() {
-        TODO("Write custom auto mode 2")
+        PathPlannerAuto("Auto 2").schedule()
     }
 
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.registerControls() // Register all teleop controls.
-        TeleopDriveCommand().schedule()
-
-        // todo debug sets the pose2d to into the field in sim
-        SwerveDriveSubsystem.resetPose(Pose2d(13.0, 2.0, Rotation2d(0.0 ,0.0)))
+        Controls.teleopInit() // Register all teleop controls.
     }
 
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
+        Controls.teleopPeriodic()
     }
 
     /** This method is called once when the robot is disabled.  */

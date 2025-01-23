@@ -1,52 +1,40 @@
 package org.frc5183.constants.swerve
 
+import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.units.Units
-import edu.wpi.first.wpilibj.Filesystem
+import org.frc5183.constants.DeviceConstants
 import org.frc5183.constants.PhysicalConstants
+import org.frc5183.constants.swerve.modules.BackLeftSwerveModuleConstants
+import org.frc5183.constants.swerve.modules.BackRightSwerveModuleConstants
+import org.frc5183.constants.swerve.modules.FrontLeftSwerveModuleConstants
+import org.frc5183.constants.swerve.modules.FrontRightSwerveModuleConstants
 import swervelib.SwerveDrive
-import swervelib.parser.SwerveParser
-import java.io.File
+import swervelib.imu.NavXSwerve
+import swervelib.imu.SwerveIMU
+import swervelib.parser.SwerveDriveConfiguration
 
 object SwerveConstants {
-    val SWERVE_DRIVE: SwerveDrive =
-        SwerveParser(
-            File(Filesystem.getDeployDirectory(), "swerve"),
-        ).createSwerveDrive(PhysicalConstants.MAX_SPEED.`in`(Units.MetersPerSecond))
+    val IMU: SwerveIMU = NavXSwerve(DeviceConstants.IMU_PORT)
+    const val IMU_INVERTED: Boolean = false
 
-    /*
-   todo
-    val SWERVE_DRIVE: SwerveDrive = SwerveDrive(
+    val YAGSL_CONFIG: SwerveDriveConfiguration =
         SwerveDriveConfiguration(
             listOf(
-                SwerveModuleConfiguration(
-                    FrontLeftConstants.DRIVE_MOTOR,
-                    FrontLeftConstants.ANGLE_MOTOR,
-                    ConversionFactorsJson(
-
-                    ),
-                    FrontLeftConstants.ABSOLUTE_ENCODER,
-                    FrontLeftConstants.ABSOLUTE_ENCODER_OFFSET,
-                    FrontLeftConstants.LOCATION.x,
-                    FrontLeftConstants.LOCATION.y,
-                    asd,
-                    asd,
-                    SwerveModulePhysicalCharacteristics(
-
-                    )
-                ),
+                FrontLeftSwerveModuleConstants.YAGSL,
+                FrontRightSwerveModuleConstants.YAGSL,
+                BackLeftSwerveModuleConstants.YAGSL,
+                BackRightSwerveModuleConstants.YAGSL,
             ).toTypedArray(),
-            NavXSwerve(
-                SerialPort.Port.kMXP,
-                NavXComType.kUSB
-            ),
-            PhysicalConstants.IMU_INVERTED,
-            SwerveModulePhysicalCharacteristics()
-        ),
-        SwerveControllerConfiguration(
+            IMU,
+            IMU_INVERTED,
+            SwerveModulePhysicalConstants.YAGSL,
+        )
 
-        ),
-        PhysicalConstants.MAX_SPEED.`in`(Units.MetersPerSecond),
-        Pose2d.kZero
-    )
-     */
+    val YAGSL_DRIVE: SwerveDrive =
+        SwerveDrive(
+            YAGSL_CONFIG,
+            SwerveControllerConstants.YAGSL,
+            PhysicalConstants.MAX_SPEED.`in`(Units.MetersPerSecond),
+            Pose2d.kZero, // See SwerveDriveSubsystem to set a pose.
+        )
 }

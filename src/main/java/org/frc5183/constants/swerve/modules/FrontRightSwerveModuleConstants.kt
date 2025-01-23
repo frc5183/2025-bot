@@ -3,29 +3,37 @@ package org.frc5183.constants.swerve.modules
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
-import org.frc5183.constants.DeviceConstants
+import org.frc5183.constants.PhysicalConstants
 import swervelib.encoders.CANCoderSwerve
 import swervelib.encoders.SwerveAbsoluteEncoder
 import swervelib.motors.SwerveMotor
+import swervelib.motors.TalonFXSwerve
 
-object FrontRightConstants : SwerveModuleConstants {
+object FrontRightSwerveModuleConstants : SwerveModuleConstants {
+    override val NAME: String
+        get() = "frontright"
+
     override val LOCATION: Translation2d
-        get() = Translation2d(0.0, 0.0)
+        get() = Translation2d(Units.Inches.of(7.0), Units.Inches.of(-7.0))
 
     override val ABSOLUTE_ENCODER: SwerveAbsoluteEncoder
-        get() = TODO()
+        get() = CANCoderSwerve(6)
 
     override val ABSOLUTE_ENCODER_OFFSET: Angle
         get() = Units.Degrees.of(0.0)
 
     override val ABSOLUTE_ENCODER_INVERTED: Boolean
-        get() = TODO("Not yet implemented")
+        get() = false
+
     override val DRIVE_MOTOR: SwerveMotor
-        get() = TODO("Not yet implemented")
+        get() = TalonFXSwerve(4, true, PhysicalConstants.DRIVE_MOTOR_TYPE)
+
     override val DRIVE_MOTOR_INVERTED: Boolean
-        get() = TODO("Not yet implemented")
+        get() = false
+
     override val ANGLE_MOTOR: SwerveMotor
-        get() = TODO("Not yet implemented")
+        get() = TalonFXSwerve(5, false, PhysicalConstants.ANGLE_MOTOR_TYPE)
+
     override val ANGLE_MOTOR_INVERTED: Boolean
-        get() = TODO("Not yet implemented")
+        get() = false
 }

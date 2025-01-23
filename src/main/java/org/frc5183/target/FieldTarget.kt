@@ -2,7 +2,7 @@ package org.frc5183.target
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout
 import edu.wpi.first.apriltag.AprilTagFields
-import edu.wpi.first.math.geometry.Pose2d
+import edu.wpi.first.math.geometry.Pose3d
 import edu.wpi.first.math.geometry.Transform2d
 import kotlin.jvm.optionals.getOrNull
 
@@ -19,7 +19,7 @@ enum class FieldTarget(
      */
     val redIds: List<Int>,
     /**
-     * The desired transform in relation to the target's [pose] to move and aim at.
+     * The desired transform in relation to the target's pose to move and aim at.
      */
     val desired: Transform2d,
 ) {
@@ -58,12 +58,12 @@ enum class FieldTarget(
         private val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo)
 
         /**
-         * Returns the [Pose2d] of an AprilTag on the field.
+         * Returns the [Pose3d] of an AprilTag on the field.
          * @param tag The ID of the [tag] to get the pose of.
          * @return The pose of the [tag], or null if the [tag] does not
          * correspond to a tag in the [AprilTagFieldLayout].
          */
-        fun getPose(tag: Int): Pose2d? = fieldLayout.getTagPose(tag).getOrNull()?.toPose2d()
+        fun getPose(tag: Int): Pose3d? = fieldLayout.getTagPose(tag).getOrNull()
 
         /**
          * Returns the [FieldTarget] that corresponds to the given [tag].

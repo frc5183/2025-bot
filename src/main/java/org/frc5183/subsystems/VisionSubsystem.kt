@@ -1,16 +1,20 @@
 package org.frc5183.subsystems
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout
-import edu.wpi.first.apriltag.AprilTagFields
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj2.command.Subsystem
+import org.frc5183.Robot
+import org.frc5183.constants.Config
 import org.frc5183.constants.DeviceConstants
+import org.frc5183.constants.SimulationConstants
 import org.frc5183.hardware.vision.Camera
 import org.frc5183.target.FieldTarget
+import org.photonvision.EstimatedRobotPose
+import org.photonvision.simulation.PhotonCameraSim
+import org.photonvision.simulation.VisionSystemSim
 import org.photonvision.targeting.PhotonTrackedTarget
 import kotlin.jvm.optionals.getOrDefault
 
@@ -24,16 +28,49 @@ object VisionSubsystem : Subsystem {
             DeviceConstants.BACK_CAMERA,
         )
 
-    val fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo)
+    private val visionSim: VisionSystemSim? =
+        if (Robot.simulation) VisionSystemSim("sim") else null
 
     /**
      * All targets in view of any camera.
      */
     val visibleTargets: List<FieldTarget>
-        get() = cameras.flatMap { getVisibleTargets(it) }
+        get() = cameras.flatMap { it.visibleTargets }
+
+    init {
+        if (Robot.simulation) {
+            visionSim!!.addAprilTags(Config.FIELD_LAYOUT)
+
+            for (camera in cameras) {
+                val cameraSim = PhotonCameraSim(camera, SimulationConstants.CAMERA_PROPERTIES)
+                cameraSim.enableDrawWireframe(SimulationConstants.VISION_WIREFRAME)
+
+                visionSim.addCamera(cameraSim, camera.transform)
+            }
+        }
+    }
 
     override fun periodic() {
-        // TODO: Update all camera data with up-to-date information.
+        visionSim?.update(SwerveDriveSubsystem.pose)
+        cameras.forEach {
+            it.updateUnreadResults()
+        }
+    }
+
+    /**
+     * Gets the [EstimatedRobotPose] from [camera].
+     * @param camera The [camera] to get the robot pose from.
+     * @return The estimated robot [Pose2d] from the [camera], or null if the pose
+     * could not be estimated or it is not "accurate."
+     */
+    fun getEstimatedRobotPose(camera: Camera): EstimatedRobotPose? {
+        val estimatedPose = camera.estimatedRobotPose
+
+        if (visionSim != null && estimatedPose != null) {
+            visionSim.debugField.getObject("estimated_pose").pose = estimatedPose.estimatedPose.toPose2d()
+        }
+
+        return estimatedPose
     }
 
     /**
@@ -66,16 +103,7 @@ object VisionSubsystem : Subsystem {
      * @return The nearest target that the camera can see, or null if no targets are in
      */
     fun getNearestTarget(camera: Camera): FieldTarget? =
-        getVisibleTargets(camera).minByOrNull { getDistanceFromTarget(it)?.`in`(edu.wpi.first.units.Units.Meters) ?: 0.0 }
-
-    /**
-     * Returns all targets in view of the [camera].
-     * @param camera The camera to get targets from.
-     * @return A list of all targets in view of the camera.
-     */
-    fun getVisibleTargets(camera: Camera): List<FieldTarget> {
-        TODO()
-    }
+        camera.visibleTargets.minByOrNull { getDistanceFromTarget(it)?.`in`(Units.Meters) ?: 0.0 }
 
     /**
      * Returns the closest visible [PhotonTrackedTarget] that can be related to [target].
@@ -87,10 +115,10 @@ object VisionSubsystem : Subsystem {
         if (!visibleTargets.contains(target)) return null
 
         for (camera in cameras) {
-            if (!getVisibleTargets(camera).contains(target)) continue
+            if (!camera.visibleTargets.contains(target)) continue
 
             // Get the transform from the camera to the target
-            for (photonTarget in camera.targets) {
+            for (photonTarget in camera.results.flatMap { it.getTargets() }) {
                 if (
                     !(
                         DriverStation
@@ -127,7 +155,7 @@ object VisionSubsystem : Subsystem {
     fun getAimPose(target: PhotonTrackedTarget): Pose2d? {
         val fieldTarget = FieldTarget.getTarget(target.fiducialId) ?: return null
 
-        return FieldTarget.getPose(target.fiducialId)?.transformBy(fieldTarget.desired)
+        return FieldTarget.getPose(target.fiducialId)?.toPose2d()?.transformBy(fieldTarget.desired)
     }
 
     /**
