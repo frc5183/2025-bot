@@ -140,11 +140,12 @@ class Camera(
 
         averageDistance /= tags
 
-        estimatedStandardDeviations = if (tags == 1 && averageDistance > 4) {
-            VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
-        } else {
-            estimatedStandardDeviations.times(1 + (averageDistance * averageDistance / 30))
-        }
+        estimatedStandardDeviations =
+            if (tags == 1 && averageDistance > 4) {
+                VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
+            } else {
+                estimatedStandardDeviations.times(1 + (averageDistance * averageDistance / 30))
+            }
 
         currentStandardDeviations = estimatedStandardDeviations
     }
