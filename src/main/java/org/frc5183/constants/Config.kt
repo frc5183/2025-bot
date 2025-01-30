@@ -9,7 +9,7 @@ import kotlin.time.Duration.Companion.seconds
  * Miscellaneous configuration constants.
  */
 object Config {
-    const val VISION_POSE_ESTIMATION = true
+    const val VISION_POSE_ESTIMATION = false // todo: enable once we have vision hardware
     val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape)
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
 }
