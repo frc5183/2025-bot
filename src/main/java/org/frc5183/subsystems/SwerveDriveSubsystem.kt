@@ -34,10 +34,10 @@ object SwerveDriveSubsystem : Subsystem {
     init {
         SwerveDriveTelemetry.verbosity = LoggingConstants.SWERVE_VERBOSITY
 
-        if (Robot.simulation) {
+        //if (Robot.simulation) {
             drive.setHeadingCorrection(false)
             drive.setCosineCompensator(false)
-        }
+        //}
 
         AutoBuilder.configure(
             { pose },
@@ -72,10 +72,10 @@ object SwerveDriveSubsystem : Subsystem {
 
     override fun periodic() {
         if (Config.VISION_POSE_ESTIMATION && VisionSubsystem.cameras.isNotEmpty()) {
-            drive.updateOdometry()
-            updatePoseEstimationWithVision()
+            //drive.updateOdometry()
+            //updatePoseEstimationWithVision()
         } else {
-            drive.updateOdometry()
+            //drive.updateOdometry()
         }
     }
 

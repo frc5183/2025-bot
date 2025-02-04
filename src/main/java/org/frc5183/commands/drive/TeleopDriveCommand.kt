@@ -1,5 +1,6 @@
 package org.frc5183.commands.drive
 
+import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj2.command.Command
@@ -31,7 +32,9 @@ class TeleopDriveCommand : Command() {
         val maxRotationRPS = 0.5
         val rotationSpeed = Controls.rotation * maxRotationRPS
 
-        SwerveDriveSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, SwerveDriveSubsystem.pose.rotation))
+        SwerveDriveSubsystem.drive(Translation2d(xSpeed, ySpeed), rotationSpeed, false, false)
+
+        //SwerveDriveSubsystem.drive(ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, SwerveDriveSubsystem.pose.rotation))
     }
 
     override fun isFinished(): Boolean = !Robot.isTeleopEnabled || cancelled
