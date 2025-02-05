@@ -34,10 +34,19 @@ object SwerveDriveSubsystem : Subsystem {
     init {
         SwerveDriveTelemetry.verbosity = LoggingConstants.SWERVE_VERBOSITY
 
-        //if (Robot.simulation) {
+        if (Robot.simulation) {
             drive.setHeadingCorrection(false)
             drive.setCosineCompensator(false)
-        //}
+        }
+
+        // TODO: Testing disabling features that could cause issues getting
+        //  us a stable basic drive with controller.
+        drive.setHeadingCorrection(false)
+        drive.setCosineCompensator(false)
+        drive.modules.forEach {
+            it.setAntiJitter(false)
+        }
+        drive.chassisVelocityCorrection = false
 
         AutoBuilder.configure(
             { pose },

@@ -32,9 +32,7 @@ class TeleopDriveCommand : Command() {
         val maxRotationRPS = 0.5
         val rotationSpeed = Controls.rotation * maxRotationRPS
 
-        SwerveDriveSubsystem.drive(Translation2d(xSpeed, ySpeed), rotationSpeed, false, false)
-
-        //SwerveDriveSubsystem.drive(ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, SwerveDriveSubsystem.pose.rotation))
+        SwerveDriveSubsystem.drive(Translation2d(xSpeed, ySpeed), rotationSpeed, fieldRelative = false, isOpenLoop = false)
     }
 
     override fun isFinished(): Boolean = !Robot.isTeleopEnabled || cancelled
