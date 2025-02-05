@@ -30,12 +30,12 @@ object PhysicalConstants {
     /**
      * The maximum [AngularVelocity] of the robot.
      */
-    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.RadiansPerSecond.of(180.0)
+    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(180.0)
 
     /**
      * The maximum [AngularAcceleration] of the robot.
      */
-    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.RadiansPerSecondPerSecond.of(360.0)
+    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.DegreesPerSecondPerSecond.of(360.0)
 
     /**
      * A measure of [Voltage] over [Time] the swerve module's drive motor can ramp at.

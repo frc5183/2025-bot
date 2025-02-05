@@ -14,7 +14,6 @@ import swervelib.imu.SwerveIMU
 import swervelib.parser.SwerveDriveConfiguration
 
 object SwerveConstants {
-    val IMU: SwerveIMU = NavXSwerve(DeviceConstants.IMU_PORT)
     const val IMU_INVERTED: Boolean = false
 
     val YAGSL_CONFIG: SwerveDriveConfiguration =
@@ -25,7 +24,7 @@ object SwerveConstants {
                 BackLeftSwerveModuleConstants.YAGSL,
                 BackRightSwerveModuleConstants.YAGSL,
             ).toTypedArray(),
-            IMU,
+            NavXSwerve(DeviceConstants.IMU_PORT),
             IMU_INVERTED,
             SwerveModulePhysicalConstants.YAGSL,
         )

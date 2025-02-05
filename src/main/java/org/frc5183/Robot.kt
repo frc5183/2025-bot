@@ -82,7 +82,7 @@ object Robot : TimedRobot() {
         )
 
         // todo debug sets the pose2d to into the field in sim
-        SwerveDriveSubsystem.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
+        //SwerveDriveSubsystem.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.

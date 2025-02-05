@@ -20,9 +20,9 @@ object Controls {
     val OPERATOR = CommandXboxController(1)
 
     val xSpeed: Double
-        get() = DRIVER.leftX
-    val ySpeed: Double
         get() = DRIVER.leftY
+    val ySpeed: Double
+        get() = DRIVER.leftX
     val rotation: Double
         get() = DRIVER.rightX
 

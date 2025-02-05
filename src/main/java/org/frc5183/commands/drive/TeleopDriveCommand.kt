@@ -28,8 +28,7 @@ class TeleopDriveCommand : Command() {
         val xSpeed = Controls.xSpeed * maxTranslationMPS
         val ySpeed = Controls.ySpeed * maxTranslationMPS
 
-        // val maxRotationRPS = PhysicalConstants.MAX_ANGULAR_VELOCITY.`in`(Units.DegreesPerSecond)
-        val maxRotationRPS = 0.5
+        val maxRotationRPS = PhysicalConstants.MAX_ANGULAR_VELOCITY.`in`(Units.RotationsPerSecond)
         val rotationSpeed = Controls.rotation * maxRotationRPS
 
         SwerveDriveSubsystem.drive(Translation2d(xSpeed, ySpeed), rotationSpeed, fieldRelative = false, isOpenLoop = false)

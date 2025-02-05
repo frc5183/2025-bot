@@ -33,6 +33,17 @@ deploy {
             team = project.frc.teamNumber
             debug = project.frc.getDebugOrDefault(false)
             artifacts.create("frcJava", FRCJavaArtifact::class.java) {
+                // Enable JVM profiling with VisualVM.
+                // WARNING: Very memory intestive, use only when nessacary (and possible)
+
+                /*
+                jvmArgs += "-Dcom.sun.management.jmxremote=true"
+                jvmArgs += "-Dcom.sun.management.jmxremote.port=1198"
+                jvmArgs += "-Dcom.sun.management.jmxremote.local.only=false"
+                jvmArgs += "-Dcom.sun.management.jmxremote.ssl=false"
+                jvmArgs += "-Dcom.sun.management.jmxremote.authenticate=false"
+                jvmArgs += "-Djava.rmi.server.hostname=10.51.83.2"
+                 */
             }
             artifacts.create("frcStaticFileDeploy", FileTreeArtifact::class.java) {
                 files = project.fileTree("src/main/deploy")

@@ -28,7 +28,7 @@ interface SwerveModuleConstants {
     /**
      * The offset of the absolute encoder from the zero position.
      */
-    val ABSOLUTE_ENCODER_OFFSET: Angle
+    val ABSOLUTE_ENCODER_OFFSET: Double
 
     /**
      * Whether the absolute encoder is inverted.
@@ -65,7 +65,8 @@ interface SwerveModuleConstants {
                 ANGLE_MOTOR,
                 SwerveModulePhysicalConstants.CONVERSION_FACTORS,
                 ABSOLUTE_ENCODER,
-                ABSOLUTE_ENCODER_OFFSET.`in`(Units.Degrees), // todo: confirm units
+                ABSOLUTE_ENCODER_OFFSET,
+                //ABSOLUTE_ENCODER_OFFSET.`in`(Units.Degrees),
                 LOCATION.x,
                 LOCATION.y,
                 SwervePIDConstants.ANGLE_PID,

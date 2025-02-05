@@ -43,10 +43,10 @@ object SwerveDriveSubsystem : Subsystem {
         //  us a stable basic drive with controller.
         drive.setHeadingCorrection(false)
         drive.setCosineCompensator(false)
-        drive.modules.forEach {
-            it.setAntiJitter(false)
-        }
-        drive.chassisVelocityCorrection = false
+        //drive.modules.forEach {
+        //    it.setAntiJitter(false)
+        //}
+        //drive.chassisVelocityCorrection = false
 
         AutoBuilder.configure(
             { pose },

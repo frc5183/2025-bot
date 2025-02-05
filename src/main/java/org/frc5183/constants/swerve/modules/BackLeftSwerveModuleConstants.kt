@@ -19,8 +19,9 @@ object BackLeftSwerveModuleConstants : SwerveModuleConstants {
     override val ABSOLUTE_ENCODER: SwerveAbsoluteEncoder
         get() = CANCoderSwerve(32)
 
-    override val ABSOLUTE_ENCODER_OFFSET: Angle
-        get() = Units.Rotations.of(0.550537)
+    override val ABSOLUTE_ENCODER_OFFSET: Double
+//        get() = Units.Degrees.of(-38.14453125)
+get() = 38.14453125
 
     override val ABSOLUTE_ENCODER_INVERTED: Boolean
         get() = false
