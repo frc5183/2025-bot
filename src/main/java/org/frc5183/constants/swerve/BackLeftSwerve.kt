@@ -12,4 +12,9 @@ object BackLeftSwerve {
     val absoluteEncoderId = 3
     val absoluteEncoderOffset = 9102830
     val absoluteEncoderReversed = false
+    val PID_P = 1
+    val PID_I = 0.0
+    val PID_D = 0.0
+    val wheelRadius = Units.Inches.of(2.0)
+    val encoderResolution = 4096.0
 }
