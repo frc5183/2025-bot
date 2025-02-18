@@ -21,7 +21,7 @@ object BackLeftSwerveModuleConstants : SwerveModuleConstants {
 
     override val ABSOLUTE_ENCODER_OFFSET: Double
 //        get() = Units.Degrees.of(-38.14453125)
-get() = 38.14453125
+get() = 211.992
 
     override val ABSOLUTE_ENCODER_INVERTED: Boolean
         get() = false
@@ -33,7 +33,7 @@ get() = 38.14453125
         get() = false
 
     override val ANGLE_MOTOR: SwerveMotor
-        get() = TalonFXSwerve(21, false, PhysicalConstants.ANGLE_MOTOR_TYPE)
+        get() = TalonFXSwerve(19, false, PhysicalConstants.ANGLE_MOTOR_TYPE)
 
     override val ANGLE_MOTOR_INVERTED: Boolean
         get() = true

@@ -21,7 +21,7 @@ object BackRightSwerveModuleConstants : SwerveModuleConstants {
 
     override val ABSOLUTE_ENCODER_OFFSET: Double
 //        get() = Units.Degrees.of(-339.521484375)
-get() = 339.521484375
+get() = 65.127
 
     override val ABSOLUTE_ENCODER_INVERTED: Boolean
         get() = false
