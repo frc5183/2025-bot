@@ -8,7 +8,7 @@ import java.net.URI
 
 plugins {
     java
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.1.10"
     id("edu.wpi.first.GradleRIO") version "2025.2.1"
     idea
 }
