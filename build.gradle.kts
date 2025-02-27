@@ -5,12 +5,18 @@ import edu.wpi.first.toolchain.NativePlatforms
 import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
+import org.gradle.api.tasks.JavaExec
+import groovy.json.JsonSlurper
+import java.io.File
 
 plugins {
     java
-    kotlin("jvm") version "2.1.0"
-    id("edu.wpi.first.GradleRIO") version "2025.2.1"
     idea
+    kotlin("jvm") version "2.1.0"
+
+    id("edu.wpi.first.GradleRIO") version "2025.2.1"
+    id("com.peterabeles.gversion") version "1.10.3"
+    id("com.diffplug.spotless") version "5.0.0" // https://github.com/Mechanical-Advantage/AdvantageKit/issues/169
 }
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_17
@@ -109,6 +115,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    // End auto-generated dependencies
 }
 
 java {
@@ -124,6 +132,10 @@ tasks.compileJava {
     options.compilerArgs.add("-XDstringConcat=inline")
 }
 
+tasks.compileKotlin {
+    dependsOn.add(tasks.createVersionFile)
+}
+
 kotlin {
     compilerOptions {
         jvmTarget.set(kotlinJvmTarget)
@@ -134,6 +146,11 @@ kotlin {
         languageVersion.set(javaLanguageVersion)
         vendor.set(jvmVendor)
     }
+}
+
+val replayWatch by tasks.register<JavaExec>("replayWatch") {
+    mainClass.set("org.littletonrobotics.junction.ReplayWatch")
+    classpath = sourceSets.main.get().runtimeClasspath
 }
 
 tasks.test {
@@ -166,6 +183,17 @@ tasks.jar {
 deployArtifact.setJarTask(tasks.jar.get())
 wpi.java.configureExecutableTasks(tasks.jar.get())
 wpi.java.configureTestTasks(tasks.test.get())
+
+// Create a BuildConstants file to log build information
+gversion {
+    srcDir = "src/main/kotlin/"
+    classPackage = "org.frc5183"
+    className = "BuildConstants"
+    language = "kotlin"
+    dateFormat = "yyyy-MM-dd HH:mm:ss z"
+    timeZone = "America/Detroit"
+    indent = "  "
+}
 
 idea {
     project {

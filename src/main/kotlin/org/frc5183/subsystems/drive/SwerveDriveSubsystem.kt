@@ -1,4 +1,4 @@
-package org.frc5183.subsystems
+package org.frc5183.subsystems.drive
 
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.commands.PathfindingCommand
@@ -10,40 +10,31 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.DriverStation.Alliance
 import edu.wpi.first.wpilibj2.command.Subsystem
-import org.frc5183.Robot
 import org.frc5183.constants.*
-import org.frc5183.constants.swerve.SwerveConstants
 import org.frc5183.constants.swerve.SwervePIDConstants
-import swervelib.SwerveDrive
-import swervelib.telemetry.SwerveDriveTelemetry
+import org.frc5183.subsystems.drive.io.SwerveDriveIO
+import org.frc5183.subsystems.vision.VisionSubsystem
+import org.littletonrobotics.junction.Logger
 import kotlin.jvm.optionals.getOrNull
 
-object SwerveDriveSubsystem : Subsystem {
-    private val drive: SwerveDrive = SwerveConstants.YAGSL_DRIVE
+class SwerveDriveSubsystem(
+    val io: SwerveDriveIO,
+    val vision: VisionSubsystem? = null,
+) : Subsystem {
+    private val ioInputs: SwerveDriveIO.SwerveDriveIOInputs = SwerveDriveIO.SwerveDriveIOInputs()
 
-    /**
-     * The current [Pose2d] of the robot according to kinematics and vision (if enabled).
-     */
-    val pose: Pose2d get() = drive.pose
+    val pose: Pose2d
+        get() = io.pose
 
-    /**
-     * The current [ChassisSpeeds] of the robot relative to the robot.
-     */
-    val robotVelocity: ChassisSpeeds get() = drive.robotVelocity
+    val robotVelocity: ChassisSpeeds
+        get() = io.robotVelocity
 
     init {
-        SwerveDriveTelemetry.verbosity = LoggingConstants.SWERVE_VERBOSITY
-
-        if (Robot.simulation) {
-            drive.setHeadingCorrection(false)
-            drive.setCosineCompensator(false)
-        }
-
         AutoBuilder.configure(
             { pose },
-            { pose: Pose2d -> resetPose(pose) },
+            io::resetPose,
             { robotVelocity },
-            { speeds: ChassisSpeeds -> drive(speeds) },
+            io::drive,
             PPHolonomicDriveController(
                 PIDConstants(
                     SwervePIDConstants.DRIVE_PID.p,
@@ -59,31 +50,33 @@ object SwerveDriveSubsystem : Subsystem {
             AutoConstants.ROBOT_CONFIG,
             { DriverStation.getAlliance().getOrNull() == Alliance.Red },
             this,
-            VisionSubsystem,
+            vision,
         )
 
         // https://pathplanner.dev/pplib-follow-a-single-path.html#java-warmup
         PathfindingCommand.warmupCommand().schedule()
 
-        if (Config.VISION_POSE_ESTIMATION && VisionSubsystem.cameras.isNotEmpty()) {
-            drive.stopOdometryThread()
+        if (Config.VISION_POSE_ESTIMATION && vision != null) {
+            io.stopOdometryThread()
         }
     }
 
     override fun periodic() {
-        if (Config.VISION_POSE_ESTIMATION && VisionSubsystem.cameras.isNotEmpty()) {
-            drive.updateOdometry()
-            updatePoseEstimationWithVision()
-        } else {
-            drive.updateOdometry()
+        io.updateInputs(ioInputs)
+        Logger.processInputs("Swerve", ioInputs)
+
+        if (Config.VISION_POSE_ESTIMATION && vision != null) {
+            io.updateOdometry()
+            updatePoseEstimationWithVision(vision)
+            vision.updateRobotPose(pose)
         }
     }
 
-    private fun updatePoseEstimationWithVision() {
-        for (camera in VisionSubsystem.cameras) {
-            val estimatedPose = VisionSubsystem.getEstimatedRobotPose(camera) ?: continue
+    private fun updatePoseEstimationWithVision(vision: VisionSubsystem) {
+        for (camera in vision.cameras) {
+            val estimatedPose = vision.getEstimatedRobotPose(camera) ?: continue
 
-            drive.addVisionMeasurement(
+            io.addVisionMeasurement(
                 estimatedPose.estimatedPose.toPose2d(),
                 estimatedPose.timestampSeconds,
                 camera.currentStandardDeviations,
@@ -95,24 +88,20 @@ object SwerveDriveSubsystem : Subsystem {
      * Sets the drive motors to brake/coast mode.
      * @param brake Whether to set the motors to brake mode (true) or coast mode (false).
      */
-    fun setMotorBrake(brake: Boolean) = drive.setMotorIdleMode(brake)
-
-    /**
-     * Resets the robot's pose to [Pose2d.kZero].
-     */
-    fun resetPose() = resetPose(Pose2d.kZero)
+    fun setMotorBrake(brake: Boolean) = io.setMotorBrake(brake)
 
     /**
      * Resets the robot's pose to [pose].
+     * @param pose The pose to reset the odometry to.
      */
-    fun resetPose(pose: Pose2d) = drive.resetOdometry(pose)
+    fun resetPose(pose: Pose2d = Pose2d.kZero) = io.resetPose(pose)
 
     fun drive(
         translation: Translation2d,
         rotation: Double,
-        fieldRelative: Boolean,
-        isOpenLoop: Boolean,
-    ) = drive.drive(translation, rotation, fieldRelative, isOpenLoop)
+        fieldOriented: Boolean,
+        openLoop: Boolean,
+    ) = io.drive(translation, rotation, fieldOriented, openLoop)
 
-    fun drive(speeds: ChassisSpeeds) = drive.drive(speeds)
+    fun drive(speeds: ChassisSpeeds) = io.drive(speeds)
 }

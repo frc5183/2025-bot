@@ -6,14 +6,16 @@ import edu.wpi.first.wpilibj2.command.Command
 import org.frc5183.Robot
 import org.frc5183.constants.Controls
 import org.frc5183.constants.PhysicalConstants
-import org.frc5183.subsystems.SwerveDriveSubsystem
+import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 
-class TeleopDriveCommand : Command() {
+class TeleopDriveCommand(
+    val drive: SwerveDriveSubsystem,
+) : Command() {
     private var cancelled = false
 
     init {
         // each subsystem used by the command must be passed into the addRequirements() method
-        addRequirements(SwerveDriveSubsystem)
+        addRequirements(drive)
     }
 
     override fun initialize() {
@@ -27,11 +29,10 @@ class TeleopDriveCommand : Command() {
         val xSpeed = Controls.xSpeed * maxTranslationMPS
         val ySpeed = Controls.ySpeed * maxTranslationMPS
 
-        // val maxRotationRPS = PhysicalConstants.MAX_ANGULAR_VELOCITY.`in`(Units.DegreesPerSecond)
-        val maxRotationRPS = 0.5
+        val maxRotationRPS = PhysicalConstants.MAX_ANGULAR_VELOCITY.`in`(Units.RotationsPerSecond)
         val rotationSpeed = Controls.rotation * maxRotationRPS
 
-        SwerveDriveSubsystem.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, SwerveDriveSubsystem.pose.rotation))
+        drive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, drive.pose.rotation))
     }
 
     override fun isFinished(): Boolean = !Robot.isTeleopEnabled || cancelled

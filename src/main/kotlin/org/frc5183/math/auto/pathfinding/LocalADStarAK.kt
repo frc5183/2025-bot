@@ -1,4 +1,4 @@
-package org.frc5183
+package org.frc5183.math.auto.pathfinding
 
 import com.pathplanner.lib.path.GoalEndState
 import com.pathplanner.lib.path.PathConstraints
