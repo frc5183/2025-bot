@@ -53,6 +53,10 @@ Octavian uses the following third-party software:
 - [WPILib]
 - [YAGSL]
 - [AdvantageKit]
+- [PathPlanner]
+- [PhotonVision]
+- [maple-sim]
+- [Hardware-specific vendor libraries]
 - ...and all of their dependencies
 
 ## Sponsors
@@ -72,3 +76,7 @@ The Devil Bots thank their sponsors:
 [WPILib]: https://github.com/wpilibsuite/allwpilib
 [YAGSL]: https://github.com/BroncBotz3481/YAGSL
 [AdvantageKit]: https://github.com/Mechanical-Advantage/AdvantageKit
+[PathPlanner]: https://pathplanner.dev/
+[PhotonVision]: https://photonvision.org/
+[maple-sim]: https://github.com/Shenzhen-Robotics-Alliance/Maple-Sim
+[Hardware-specific vendor libraries]: ./vendordeps/
