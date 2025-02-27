@@ -1,9 +1,11 @@
 <div align="center">
-<img src="https://avatars.githubusercontent.com/u/131812852?s=200&v=4" alt="Devil Bots Logo" width=128 />
-
-# Octavian
-<b>FRC 5183's 2025 Reefscape Robot</b>
-<br />
+  <img src="https://avatars.githubusercontent.com/u/131812852?s=200&v=4" alt="Devil Bots Logo" width=128 />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://www.firstinspires.org/sites/default/files/uploads/resource_library/brand/thumbnails/FIRST-Icon.png" alt="FIRST&copy; Logo" width=128 />
+  
+  # Octavian
+  <b>FRC 5183's 2025 Reefscape Robot</b>
+  <br />
 </div>
 
 ## Mechanisms
