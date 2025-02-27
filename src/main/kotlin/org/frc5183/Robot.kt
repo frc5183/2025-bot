@@ -7,10 +7,8 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
-import edu.wpi.first.wpilibj.smartdashboard.Field2d
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
 import edu.wpi.first.wpilibj2.command.Command
@@ -18,8 +16,22 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.drive.DriveToPose2d
 import org.frc5183.constants.Config
 import org.frc5183.constants.Controls
-import org.frc5183.subsystems.SwerveDriveSubsystem
-import org.frc5183.subsystems.VisionSubsystem
+import org.frc5183.constants.DeviceConstants
+import org.frc5183.constants.State
+import org.frc5183.math.auto.pathfinding.LocalADStarAK
+import org.frc5183.subsystems.drive.SwerveDriveSubsystem
+import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
+import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
+import org.frc5183.subsystems.vision.VisionSubsystem
+import org.frc5183.subsystems.vision.io.RealVisionIO
+import org.frc5183.subsystems.vision.io.SimulatedVisionIO
+import org.littletonrobotics.junction.LogFileUtil
+import org.littletonrobotics.junction.LoggedRobot
+import org.littletonrobotics.junction.Logger
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser
+import org.littletonrobotics.junction.networktables.NT4Publisher
+import org.littletonrobotics.junction.wpilog.WPILOGReader
+import org.littletonrobotics.junction.wpilog.WPILOGWriter
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -31,9 +43,9 @@ import org.frc5183.subsystems.VisionSubsystem
  * the `Main.kt` file in the project. (If you use the IDE's Rename or Move refactorings when renaming the
  * object or package, it will get changed everywhere.)
  */
-object Robot : TimedRobot() {
-    // Todo: move?
-    val field: Field2d = Field2d()
+object Robot : LoggedRobot() {
+    private val vision: VisionSubsystem
+    private val drive: SwerveDriveSubsystem
 
     val simulation: Boolean
         get() = isSimulation()
@@ -42,9 +54,9 @@ object Robot : TimedRobot() {
 
     private var selectedAutoMode = AutoMode.default
     private val autoModeChooser =
-        SendableChooser<AutoMode>().also { chooser ->
+        LoggedDashboardChooser<AutoMode>("Auto Mode").also { chooser ->
             AutoMode.entries.forEach { chooser.addOption(it.optionName, it) }
-            chooser.setDefaultOption(AutoMode.default.optionName, AutoMode.default)
+            chooser.addDefaultOption(AutoMode.default.optionName, AutoMode.default)
         }
 
     /**
@@ -71,22 +83,67 @@ object Robot : TimedRobot() {
 
     init
     {
-        // Report our language as Kotlin and not Java.
+        // Report usage of Kotlin and AdvantageKit
         HAL.report(tResourceType.kResourceType_Language, tInstances.kLanguage_Kotlin, 0, WPILibVersion.Version)
-        SmartDashboard.putData("Auto choices", autoModeChooser)
-        SmartDashboard.putData("Field", field)
+        HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_AdvantageKit)
 
-        CommandScheduler.getInstance().registerSubsystem(
-            SwerveDriveSubsystem,
-            VisionSubsystem,
-        )
+        // If these don't resolve then build or run the createVersionFile gradle task.
+        Logger.recordMetadata("ProjectName", MAVEN_NAME)
+        Logger.recordMetadata("BuildDate", BUILD_DATE)
+        Logger.recordMetadata("GitSHA", GIT_SHA)
+        Logger.recordMetadata("GitDate", GIT_DATE)
+        Logger.recordMetadata("GitBranch", GIT_BRANCH)
+        when (DIRTY) {
+            0 -> Logger.recordMetadata("GitDirty", "All changes committed")
+            1 -> Logger.recordMetadata("GitDirty", "Uncommitted changes")
+            else -> Logger.recordMetadata("GitDirty", "Unknown")
+        }
 
-        // todo debug sets the pose2d to into the field in sim
-        SwerveDriveSubsystem.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
+        when (State.mode) {
+            State.Mode.REAL -> {
+                Logger.addDataReceiver(WPILOGWriter())
+                Logger.addDataReceiver(NT4Publisher())
+            }
+            State.Mode.SIM -> {
+                // Logger.addDataReceiver(WPILOGWriter()) // Only enable when needed, can generate tons of logs when doing rapid iteration/testing.
+                Logger.addDataReceiver(NT4Publisher())
+            }
+            State.Mode.REPLAY -> {
+                setUseTiming(false)
+                val logPath = LogFileUtil.findReplayLog()
+                Logger.setReplaySource(WPILOGReader(logPath))
+                Logger.addDataReceiver(WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")))
+            }
+        }
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.
         Pathfinding.setPathfinder(LocalADStarAK())
+
+        Logger.start()
+
+        vision =
+            VisionSubsystem(
+                if (State.mode ==
+                    State.Mode.REAL
+                ) {
+                    RealVisionIO(listOf(DeviceConstants.FRONT_CAMERA, DeviceConstants.BACK_CAMERA))
+                } else {
+                    SimulatedVisionIO(listOf(DeviceConstants.FRONT_CAMERA, DeviceConstants.BACK_CAMERA))
+                },
+            )
+
+        drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
+
+        CommandScheduler.getInstance().registerSubsystem(
+            vision,
+            drive,
+        )
+
+        SmartDashboard.putData("Auto choices", autoModeChooser.sendableChooser)
+
+        // todo debug sets the pose2d to into the field in sim
+        drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
 
         CommandScheduler.getInstance().onCommandInitialize {
             println("Command initialized: ${it.name}")
@@ -108,13 +165,18 @@ object Robot : TimedRobot() {
     }
 
     override fun robotPeriodic() {
-        field.robotPose = SwerveDriveSubsystem.pose
+        // Wrap the command scheduler in a high priority thread.
+        //  (thanks AdvantageKit template)
+        Threads.setCurrentThreadPriority(true, 99)
+
         CommandScheduler.getInstance().run()
+
+        Threads.setCurrentThreadPriority(false, 10)
     }
 
     override fun autonomousInit() {
         CommandScheduler.getInstance().cancelAll()
-        selectedAutoMode = autoModeChooser.selected ?: AutoMode.default
+        selectedAutoMode = autoModeChooser.get() ?: AutoMode.default
         println("Selected auto mode: ${selectedAutoMode.optionName}")
         selectedAutoMode.autoInitFunction.invoke()
     }
@@ -122,7 +184,7 @@ object Robot : TimedRobot() {
     override fun autonomousPeriodic() = selectedAutoMode.periodicFunction.invoke()
 
     private fun autoMode1() {
-        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))).schedule()
+        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0)), drive, vision).schedule()
         /*
         val pose = Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))
 
@@ -149,7 +211,7 @@ object Robot : TimedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit() // Register all teleop controls.
+        Controls.teleopInit(drive, vision) // Register all teleop controls.
     }
 
     /** This method is called periodically during operator control.  */
@@ -160,7 +222,7 @@ object Robot : TimedRobot() {
     /** This method is called once when the robot is disabled.  */
     override fun disabledInit() {
         CommandScheduler.getInstance().cancelAll()
-        SwerveDriveSubsystem.setMotorBrake(true)
+        drive.setMotorBrake(true)
         brakeTimer.reset()
         brakeTimer.start()
     }
@@ -168,7 +230,7 @@ object Robot : TimedRobot() {
     /** This method is called periodically when disabled.  */
     override fun disabledPeriodic() {
         if (brakeTimer.advanceIfElapsed(Config.BREAK_TIME_AFTER_DISABLE.inWholeSeconds.toDouble())) {
-            SwerveDriveSubsystem.setMotorBrake(false)
+            drive.setMotorBrake(false)
             brakeTimer.stop()
             brakeTimer.reset()
         }

@@ -20,6 +20,7 @@ import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+// todo: should we move calculations, vision processing, and such out of this, or keep it here?
 class Camera(
     /**
      * The nickname of the [Camera] (found in the PhotonVision UI).

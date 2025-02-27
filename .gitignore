@@ -354,3 +354,12 @@ compile_commands.json
 
 
 # End entries from WPI Lib team
+
+# Kotlin Language Server
+kls_database.db
+
+# AdvantageKit replay logs.
+_sim./
+
+# Auto-generated BuildConstants containing git/version info.
+src/main/kotlin/org/frc5183/BuildConstants.kt
