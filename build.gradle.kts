@@ -14,7 +14,7 @@ plugins {
     idea
     kotlin("jvm") version "2.1.0"
 
-    id("edu.wpi.first.GradleRIO") version "2025.2.1"
+    id("edu.wpi.first.GradleRIO") version "2025.3.1"
     id("com.peterabeles.gversion") version "1.10.3"
     id("com.diffplug.spotless") version "5.0.0" // https://github.com/Mechanical-Advantage/AdvantageKit/issues/169
 }
@@ -111,7 +111,7 @@ dependencies {
     nativeRelease(wpi.java.vendor.jniRelease(NativePlatforms.desktop))
     simulationRelease(wpi.sim.enableRelease())
 
-    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation(platform("org.junit:junit-bom:5.12.0"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
