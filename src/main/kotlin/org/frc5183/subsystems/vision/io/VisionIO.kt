@@ -48,23 +48,29 @@ interface VisionIO {
     val visibleTargets: List<FieldTarget>
 
     /**
-     * Updates all cameras with the most recent results
-     */
+ * Refreshes all cameras with the latest unread vision processing results.
+ *
+ * This method ensures that each camera's state is updated with any new data from the vision processing pipeline.
+ */
     fun updateUnreadResults()
 
     /**
-     * Updates the robot pose in the IO (mainly used for simulation, however
-     * implementers can use this for other purposes).
-     * @param pose The new robot pose.
-     */
+ * Updates the robot's pose in the IO subsystem.
+ *
+ * Although primarily intended for simulation, this method allows implementers to update the robot's pose
+ * for logging, state management, or other custom purposes.
+ *
+ * @param pose The new pose to apply to the robot.
+ */
     fun updateRobotPose(pose: Pose2d)
 
     /**
-     * Gets the [EstimatedRobotPose] from [camera].
-     * @param camera The [camera] to get the robot pose from.
-     * @return The estimated robot [Pose2d] from the [camera], or null if the pose
-     * could not be estimated or it is not "accurate."
-     */
+ * Returns the estimated robot pose derived from the specified camera.
+ *
+ * @param camera the camera used to estimate the robot pose.
+ * @return an [EstimatedRobotPose] representing the robot's pose, or null if the pose
+ * could not be estimated or is not considered sufficiently accurate.
+ */
     fun getEstimatedRobotPose(camera: Camera): EstimatedRobotPose?
 
     /**
@@ -81,18 +87,19 @@ interface VisionIO {
     fun getDistanceFromTarget(target: FieldTarget): Distance?
 
     /**
-     * Returns the distance to a [target] in relation to the center of the robot.
-     * @param target The [PhotonTrackedTarget] to get the distance to.
-     * @return The distance to [target], or null if [target] is not visible.
-     */
+ * Calculates the distance from the robot's center to the specified [PhotonTrackedTarget].
+ *
+ * @param target the [PhotonTrackedTarget] for which the distance is computed.
+ * @return a [Distance] representing the distance to the target, or null if the target is not visible.
+ */
     fun getDistanceFromTarget(target: PhotonTrackedTarget): Distance?
 
     /**
-     * Returns the closest visible [PhotonTrackedTarget] that has the proper id for [target].
-     * @param target The [FieldTarget] to look for.
-     * @return The closest possible [PhotonTrackedTarget] with an id that [target] has, or null
-     * if no visible targets has an id that [target] has (alliance-specific).
-     */
+ * Returns the closest visible [PhotonTrackedTarget] whose identifier matches that of the provided [FieldTarget].
+ *
+ * @param target the [FieldTarget] whose identifier is used for matching.
+ * @return the closest matching [PhotonTrackedTarget], or null if no visible target matches the identifier (alliance-specific).
+ */
     fun getClosestVisiblePhotonTarget(target: FieldTarget): PhotonTrackedTarget?
 
     /**

@@ -18,10 +18,25 @@ class TeleopDriveCommand(
         addRequirements(drive)
     }
 
+    /**
+     * Resets the command's cancelled state to indicate it is active.
+     *
+     * This method is called when the command is initialized.
+     */
     override fun initialize() {
         cancelled = false
     }
 
+    /**
+     * Executes a single iteration of teleoperated driving.
+     *
+     * This method calculates the robot's translation and rotation speeds by scaling the control inputs
+     * with the maximum allowable speeds defined in [PhysicalConstants]. It converts these speeds from
+     * robot-relative to field-relative coordinates using the robot's current rotation (from the drive
+     * subsystem's pose) and passes the resulting [ChassisSpeeds] to the [SwerveDriveSubsystem].
+     *
+     * Future improvements may include the implementation of acceleration curves.
+     */
     override fun execute() {
         // todo add acceleration curves and all of that
 
@@ -35,7 +50,14 @@ class TeleopDriveCommand(
         drive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, drive.pose.rotation))
     }
 
-    override fun isFinished(): Boolean = !Robot.isTeleopEnabled || cancelled
+    /**
+ * Determines if the command should finish execution.
+ *
+ * The command is complete if teleoperated mode is disabled or if it has been cancelled.
+ *
+ * @return true if teleop mode is turned off or the command has been cancelled, false otherwise.
+ */
+override fun isFinished(): Boolean = !Robot.isTeleopEnabled || cancelled
 
     override fun end(interrupted: Boolean) {
         if (!Robot.isTeleopEnabled && interrupted) {

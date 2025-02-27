@@ -25,10 +25,24 @@ class SimulatedVisionIO(
         }
     }
 
+    /**
+     * Updates the simulated vision system with the robot's current pose.
+     *
+     * @param pose The updated robot position and orientation.
+     */
     override fun updateRobotPose(pose: Pose2d) {
         visionSim.update(pose)
     }
 
+    /**
+     * Retrieves the estimated robot pose from the specified camera.
+     *
+     * If the camera provides a valid estimated pose, this method converts the pose into a Pose2d
+     * and updates the simulation's debug field accordingly before returning it.
+     *
+     * @param camera The camera for which the estimated robot pose is obtained.
+     * @return The current estimated robot pose, or null if no estimate is available.
+     */
     override fun getEstimatedRobotPose(camera: Camera): EstimatedRobotPose? {
         val estimatedPose = camera.estimatedRobotPose
 

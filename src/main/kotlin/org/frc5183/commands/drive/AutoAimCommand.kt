@@ -13,6 +13,13 @@ import org.frc5183.subsystems.vision.VisionSubsystem
  */
 // todo: make sure this doesn't run during teleop if we're not holding a button otherwise its not allowed by FRC rules
 // todo v2: is there a better way to do these kinds of commands? idk if subclassing command is the right way or not
+/**
+ * Returns a command for automatically aiming at the nearest target.
+ *
+ * Queries the vision subsystem for the nearest target. If a target is detected, an [AimCommand] is returned,
+ * which uses the provided drive and vision subsystems to aim at the target. If no target is detected,
+ * an [InstantCommand] is returned.
+ */
 fun AutoAimCommand(drive: SwerveDriveSubsystem, vision: VisionSubsystem): Command {
     vision.getNearestTarget()?.let { target ->
         return AimCommand(target, drive, vision)

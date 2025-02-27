@@ -7,7 +7,16 @@ import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 
 // todo: make sure this doesn't run during teleop if we're not holding a button otherwise its not allowed by FRC rules
-fun DriveToPose2d(
+/**
+     * Creates a command to drive the robot to a specified pose.
+     *
+     * This command logs its initialization, execution, and termination using the target pose. It leverages the
+     * provided drive and vision subsystems to perform its operations and is considered complete immediately after execution.
+     *
+     * @param pose The target pose, including position and orientation, that the robot should reach.
+     * @return A command that drives the robot to the specified pose.
+     */
+    fun DriveToPose2d(
     pose: Pose2d,
     drive: SwerveDriveSubsystem,
     vision: VisionSubsystem

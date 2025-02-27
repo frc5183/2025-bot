@@ -26,6 +26,12 @@ class AimCommand(
         addRequirements(vision)
     }
 
+    /**
+     * Initializes the aim command by retrieving the target pose from the vision subsystem.
+     *
+     * If no pose is available for the given target, the command is immediately marked as finished.
+     * Otherwise, the drive command to move to the aim pose is instantiated using the drive and vision subsystems.
+     */
     override fun initialize() {
         val pose = vision.getAimPose(target)
         if (pose == null) {
@@ -36,6 +42,9 @@ class AimCommand(
         command = DriveToPose2d(pose, drive, vision)
     }
 
+    /**
+     * Executes the command by scheduling the associated drive command if it exists, then immediately marking the command as finished.
+     */
     override fun execute() {
         command?.schedule()
         finished = true

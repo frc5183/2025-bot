@@ -164,6 +164,12 @@ object Robot : LoggedRobot() {
         }
     }
 
+    /**
+     * Executes periodic robot routines by running the CommandScheduler with temporarily elevated thread priority.
+     *
+     * This method raises the current thread's priority to ensure the CommandScheduler processes commands with enhanced responsiveness,
+     * then restores the thread's priority after execution.
+     */
     override fun robotPeriodic() {
         // Wrap the command scheduler in a high priority thread.
         //  (thanks AdvantageKit template)
@@ -174,6 +180,12 @@ object Robot : LoggedRobot() {
         Threads.setCurrentThreadPriority(false, 10)
     }
 
+    /**
+     * Initializes the autonomous mode.
+     *
+     * This method cancels any active commands, retrieves the selected autonomous mode using the dashboard chooser
+     * (defaulting to the predefined mode if none is selected), logs the chosen mode, and then triggers its initialization routine.
+     */
     override fun autonomousInit() {
         CommandScheduler.getInstance().cancelAll()
         selectedAutoMode = autoModeChooser.get() ?: AutoMode.default
@@ -181,8 +193,22 @@ object Robot : LoggedRobot() {
         selectedAutoMode.autoInitFunction.invoke()
     }
 
-    override fun autonomousPeriodic() = selectedAutoMode.periodicFunction.invoke()
+    /**
+ * Periodically executes the routine of the currently selected autonomous mode.
+ *
+ * This method is called during the autonomous period to invoke the periodic function
+ * associated with the active autonomous mode.
+ */
+override fun autonomousPeriodic() = selectedAutoMode.periodicFunction.invoke()
 
+    /**
+     * Schedules a command during autonomous mode to drive the robot to a fixed pose.
+     *
+     * Creates and schedules a [DriveToPose2d] command that directs the robot to move to
+     * the position (15.0, 3.0) with a zero rotation. This routine utilizes the drive and
+     * vision subsystems to execute the maneuver. An alternative path-following approach
+     * is provided in commented-out code.
+     */
     private fun autoMode1() {
         DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0)), drive, vision).schedule()
         /*
@@ -208,18 +234,33 @@ object Robot : LoggedRobot() {
         PathPlannerAuto("Auto 2").schedule()
     }
 
-    /** This method is called once when teleop is enabled.  */
+    /**
+     * Initializes teleoperated mode.
+     *
+     * This method is invoked when teleoperated mode is enabled. It cancels all currently running commands and
+     * configures teleoperated controls by setting up the drive and vision subsystems.
+     */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
         Controls.teleopInit(drive, vision) // Register all teleop controls.
     }
 
-    /** This method is called periodically during operator control.  */
+    /**
+     * Executes periodic teleoperated control actions.
+     *
+     * This method is called repeatedly during operator control to delegate control processing
+     * to [Controls.teleopPeriodic] for handling current input states.
+     */
     override fun teleopPeriodic() {
         Controls.teleopPeriodic()
     }
 
-    /** This method is called once when the robot is disabled.  */
+    /**
+     * Initializes the robot's disabled state.
+     *
+     * Cancels all running commands, engages the motor brake, and resets and starts the brake timer.
+     * This setup ensures that the robot's drive system is immediately secured when it is disabled.
+     */
     override fun disabledInit() {
         CommandScheduler.getInstance().cancelAll()
         drive.setMotorBrake(true)
@@ -227,7 +268,12 @@ object Robot : LoggedRobot() {
         brakeTimer.start()
     }
 
-    /** This method is called periodically when disabled.  */
+    /**
+     * Called periodically while the robot is disabled.
+     *
+     * Monitors the elapsed disable time and, once the configured delay passes, disengages the motor brake.
+     * The timer is then stopped and reset to prepare for any subsequent disable cycles.
+     */
     override fun disabledPeriodic() {
         if (brakeTimer.advanceIfElapsed(Config.BREAK_TIME_AFTER_DISABLE.inWholeSeconds.toDouble())) {
             drive.setMotorBrake(false)

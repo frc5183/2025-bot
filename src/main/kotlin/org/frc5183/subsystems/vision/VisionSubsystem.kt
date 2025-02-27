@@ -29,6 +29,12 @@ class VisionSubsystem(
     val visibleTargets: List<FieldTarget>
         get() = io.visibleTargets
 
+    /**
+     * Performs periodic updates for the vision subsystem.
+     *
+     * This method updates the vision system's input state, logs the current inputs under the "Vision" category,
+     * and processes any unread results to ensure the subsystem remains synchronized with the latest sensor data.
+     */
     override fun periodic() {
         io.updateInputs(ioInputs)
         Logger.processInputs("Vision", ioInputs)
@@ -36,19 +42,26 @@ class VisionSubsystem(
     }
 
     /**
-     * Updates the robot's pose.
-     * @param pose The new robot [Pose2d].
-     * @see [VisionIO.updateRobotPose]
-     */
+ * Updates the robot's pose using the provided [Pose2d].
+ *
+ * Delegates the update to the underlying vision I/O, ensuring that the vision system has the current robot position.
+ *
+ * @param pose the new pose of the robot.
+ * @see VisionIO.updateRobotPose
+ */
     fun updateRobotPose(pose: Pose2d) = io.updateRobotPose(pose)
 
     /**
-     * Gets the [EstimatedRobotPose] from [camera].
-     * @param camera The [camera] to get the robot pose from.
-     * @return The estimated robot [Pose2d] from the [camera], or null if the pose
-     * could not be estimated or it is not "accurate."
-     * @see [VisionIO.getEstimatedRobotPose]
-     */
+ * Retrieves the estimated robot pose from the specified camera.
+ *
+ * This method queries the vision I/O system for a robot pose estimate. It returns an
+ * [EstimatedRobotPose] if a reliable estimate can be obtained, or null if the estimation
+ * fails or is deemed insufficiently accurate.
+ *
+ * @param camera the camera used for estimating the robot's pose
+ * @return the estimated robot pose as an [EstimatedRobotPose], or null if the pose could not be determined reliably
+ * @see VisionIO.getEstimatedRobotPose
+ */
     fun getEstimatedRobotPose(camera: Camera): EstimatedRobotPose? = io.getEstimatedRobotPose(camera)
 
     /**
@@ -75,12 +88,13 @@ class VisionSubsystem(
     fun getDistanceFromTarget(target: PhotonTrackedTarget): Distance? = io.getDistanceFromTarget(target)
 
     /**
-     * Returns the closest visible [PhotonTrackedTarget] that has the proper id for [target].
-     * @param target The [FieldTarget] to look for.
-     * @return The closest possible [PhotonTrackedTarget] with an id that [target] has, or null
-     * if no visible targets has an id that [target] has (alliance-specific).
-     * @see [VisionIO.getClosestVisiblePhotonTarget]
-     */
+ * Retrieves the nearest visible [PhotonTrackedTarget] whose identifier matches that of the specified [FieldTarget].
+ *
+ * @param target the [FieldTarget] whose id (typically alliance-specific) is used to locate a matching [PhotonTrackedTarget].
+ * @return the closest matching [PhotonTrackedTarget] if one exists; otherwise, null.
+ *
+ * @see VisionIO.getClosestVisiblePhotonTarget
+ */
     fun getClosestVisiblePhotonTarget(target: FieldTarget): PhotonTrackedTarget? = io.getClosestVisiblePhotonTarget(target)
 
     /**

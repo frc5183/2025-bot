@@ -61,6 +61,13 @@ class SwerveDriveSubsystem(
         }
     }
 
+    /**
+     * Performs the periodic update for the swerve drive subsystem.
+     *
+     * This method refreshes the hardware input readings and logs them. If vision-based pose
+     * estimation is enabled and a vision subsystem is provided, it also updates the drive odometry,
+     * refines the robot's pose with vision data, and subsequently updates the robot pose.
+     */
     override fun periodic() {
         io.updateInputs(ioInputs)
         Logger.processInputs("Swerve", ioInputs)
@@ -72,6 +79,15 @@ class SwerveDriveSubsystem(
         }
     }
 
+    /**
+     * Updates the robot's pose estimation using vision measurements.
+     *
+     * Iterates through each camera in the provided vision subsystem and, if an estimated pose is available,
+     * converts the pose to a 2D representation and logs the measurement (with its timestamp and standard deviations)
+     * to the drive I/O.
+     *
+     * @param vision The vision subsystem instance supplying camera data and pose estimations.
+     */
     private fun updatePoseEstimationWithVision(vision: VisionSubsystem) {
         for (camera in vision.cameras) {
             val estimatedPose = vision.getEstimatedRobotPose(camera) ?: continue
@@ -91,11 +107,25 @@ class SwerveDriveSubsystem(
     fun setMotorBrake(brake: Boolean) = io.setMotorBrake(brake)
 
     /**
-     * Resets the robot's pose to [pose].
-     * @param pose The pose to reset the odometry to.
-     */
+ * Resets the robot's odometry to the specified pose.
+ *
+ * If no pose is provided, the odometry is reset to the default origin (Pose2d.kZero).
+ *
+ * @param pose the pose to reset the odometry to; defaults to Pose2d.kZero.
+ */
     fun resetPose(pose: Pose2d = Pose2d.kZero) = io.resetPose(pose)
 
+    /**
+     * Commands the drive system to move using the specified translation and rotation values.
+     *
+     * This function delegates the movement command to the drive I/O interface, allowing for
+     * field-oriented control and the option to use open-loop control.
+     *
+     * @param translation The desired translational movement as a 2D vector.
+     * @param rotation The rotational movement command.
+     * @param fieldOriented If true, movement is executed relative to the field's orientation.
+     * @param openLoop If true, the system uses open-loop control.
+     */
     fun drive(
         translation: Translation2d,
         rotation: Double,
@@ -103,5 +133,12 @@ class SwerveDriveSubsystem(
         openLoop: Boolean,
     ) = io.drive(translation, rotation, fieldOriented, openLoop)
 
-    fun drive(speeds: ChassisSpeeds) = io.drive(speeds)
+    /**
+ * Commands the drive system to move using the provided chassis speeds.
+ *
+ * Delegates the drive command to the underlying hardware interface represented by `io`.
+ *
+ * @param speeds The desired chassis speeds, encapsulating forward, lateral, and angular velocities.
+ */
+fun drive(speeds: ChassisSpeeds) = io.drive(speeds)
 }

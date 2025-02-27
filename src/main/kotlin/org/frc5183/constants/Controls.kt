@@ -34,8 +34,18 @@ object Controls {
     val CONTROLS_EVENT_LOOP = EventLoop()
 
     /**
-     * A function to be called during teleop init.
-     * Registers all the buttons to their respective commands and the drive command.
+     * Initializes the teleoperated command bindings and schedules the teleop drive command.
+     *
+     * If the teleop drive command is not yet initialized, it is created using the provided drive subsystem.
+     * The function then sets up the following driver controller actions:
+     * - D-PAD Up: Triggers an aim command targeting the pipe.
+     * - X Button: Prints a debug message and schedules an auto-aim and shoot command.
+     * - B Button: Cancels all current commands and reschedules the teleop drive command.
+     *
+     * Finally, the teleop drive command is scheduled for execution.
+     *
+     * @param drive the drive subsystem used for teleoperated driving.
+     * @param vision the vision subsystem used for target acquisition.
      */
     fun teleopInit(
         drive: SwerveDriveSubsystem,

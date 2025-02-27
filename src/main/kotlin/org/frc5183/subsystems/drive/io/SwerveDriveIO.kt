@@ -16,7 +16,12 @@ interface SwerveDriveIO {
         var moduleStates by log(arrayOf<SwerveModuleState>())
     }
 
-    fun updateInputs(inputs: SwerveDriveIOInputs)
+    /**
+ * Updates the swerve drive's internal state using the latest sensor inputs.
+ *
+ * @param inputs the input data containing the robot's current pose, velocity, and swerve module states.
+ */
+fun updateInputs(inputs: SwerveDriveIOInputs)
 
     /**
      * The [Pose2d] of the robot according to swerve drive odometry and vision (if enabled).
@@ -35,10 +40,16 @@ interface SwerveDriveIO {
     fun stopOdometryThread()
 
     /**
-     * Adds a vision measurement to the swerve drive.
-     * @param pose The pose to add.
-     * @param timestampSeconds The timestamp of the measurement.
-     * @param standardDeviations The standard deviations of the measurement.
+     * Incorporates a vision-based pose measurement into the swerve drive system.
+     *
+     * This method registers an external vision measurement, including the observed pose,
+     * the timestamp when the measurement was captured (in seconds), and the associated uncertainty
+     * expressed through a matrix of standard deviations. These vision measurements are typically
+     * used to enhance the robot's state estimation by fusing them with other sensor data.
+     *
+     * @param pose the vision-observed pose to be integrated into the system.
+     * @param timestampSeconds the time in seconds when the vision measurement was recorded.
+     * @param standardDeviations the measurement uncertainties associated with the vision observation.
      */
     fun addVisionMeasurement(
         pose: Pose2d,
@@ -47,10 +58,12 @@ interface SwerveDriveIO {
     )
 
     /**
-     * Updates the robot's odometry using YAGSL.
-     * This should only be run when the odometry thread is stopped (which should
-     * only be when vision pose estimation is enabled).
-     */
+ * Updates the robot's odometry using YAGSL.
+ *
+ * This method recalculates the robot's pose from sensor data and should only be called
+ * after stopping the odometry thread, which is typically necessary when vision-based pose
+ * estimation is active.
+ */
     fun updateOdometry()
 
     /**
@@ -60,16 +73,25 @@ interface SwerveDriveIO {
     fun setMotorBrake(brake: Boolean)
 
     /**
-     * Resets the robot's pose to [pose].
-     */
+ * Resets the robot's internal pose to the specified value.
+ *
+ * This method updates the robot's odometry to the provided [pose]. If no pose is specified, it defaults to [Pose2d.kZero].
+ *
+ * @param pose The new pose to set for the robot, defaulting to [Pose2d.kZero].
+ */
     fun resetPose(pose: Pose2d = Pose2d.kZero)
 
     /**
-     * Drives the robot with the given translation and rotation.
-     * @param translation The translation to drive with.
-     * @param rotation The rotation to drive with.
-     * @param fieldOriented Whether the translation is field-oriented.
-     * @param openLoop Whether the drive is open-loop.
+     * Drives the robot by applying the specified translation and rotation commands.
+     *
+     * This function supports both field-oriented and open-loop control modes.
+     * When field-oriented mode is enabled, the translation vector is interpreted
+     * relative to the field rather than the robot's current orientation.
+     *
+     * @param translation The 2D vector representing the desired translational movement.
+     * @param rotation The rotational command, typically representing angular velocity.
+     * @param fieldOriented If true, interprets the translation in a field-relative frame.
+     * @param openLoop If true, engages open-loop control, bypassing sensor feedback.
      */
     fun drive(
         translation: Translation2d,
