@@ -6,25 +6,56 @@
 <br />
 </div>
 
-### Hardware
+## Mechanisms
+### Drive
+Octavian features a full swerve drive system capable of speeds up to (WIP) m/s.
+<details>
+  <summary>Demo Video</summary>
+  WIP.
+</details>
+<details>
+  <summary>Build Information</summary>
+  WIP.
+</details>
+
+### Elevator
+Octavian has a three stage elevator capable of advanced techniques and strategies.
+<details>
+  <summary>Demo Video</summary>
+  WIP.
+</details>
+<details>
+  <summary>Build Information</summary>
+  WIP.
+</details>
+
+## Hardware
 Octavian uses the following hardware:
-#### Drive
+### Drive
 - [SDS MK4n]
 - [Kraken X60]
 - [CANcoder]
 - [navX2-MXP] (classic, not generation 2)
-#### Miscellaneous
+### Frame
+- WIP
+### Elevator
+- WIP
+### Miscellaneous
 - [NI roboRIO]
 - [CTRE Power Distribution Panel]
 - [CTRE Voltage Regulator Module]
 
-### Software
+## Software
 Octavian uses the following third-party software:
 - [Kotlin]
 - [WPILib]
 - [YAGSL]
 - [AdvantageKit]
 - ...and all of their dependencies
+
+## Sponsors
+The Devil Bots thank their sponsors:
+(WIP)
 
 [SDS MK4n]: https://www.swervedrivespecialties.com/products/mk4n-swerve-module
 [Kraken X60]: https://store.ctr-electronics.com/products/kraken-x60
