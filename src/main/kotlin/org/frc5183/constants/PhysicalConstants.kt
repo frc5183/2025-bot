@@ -20,12 +20,12 @@ object PhysicalConstants {
     /**
      * The maximum [LinearVelocity] of the robot.
      */
-    val MAX_SPEED: LinearVelocity = Units.MetersPerSecond.of(3.0)
+    val MAX_SPEED: LinearVelocity = Units.MetersPerSecond.of(5.0)
 
     /**
      * The maximum [LinearAcceleration] of the robot.
      */
-    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(3.0)
+    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(8.0)
 
     /**
      * The maximum [AngularVelocity] of the robot.
