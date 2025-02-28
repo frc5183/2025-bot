@@ -33,7 +33,7 @@ class AimCommand(
             return
         }
 
-        command = DriveToPose2d(pose, drive, vision)
+        command = DriveToPose2d(pose, drive)
     }
 
     override fun execute() {

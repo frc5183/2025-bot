@@ -48,7 +48,7 @@ object SwerveModulePhysicalConstants {
     init {
         DRIVE_CONVERSION_FACTORS.gearRatio = PhysicalConstants.DRIVE_GEAR_RATIO
         DRIVE_CONVERSION_FACTORS.diameter =
-            PhysicalConstants.WHEEL_RADIUS.`in`(Units.Inches) * 2
+            PhysicalConstants.WHEEL_DIAMETER.`in`(Units.Inches)
         DRIVE_CONVERSION_FACTORS.calculate()
 
         ANGLE_CONVERSION_FACTORS.gearRatio = PhysicalConstants.ANGLE_GEAR_RATIO

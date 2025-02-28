@@ -53,27 +53,27 @@ object PhysicalConstants {
     // </editor-fold>
 
     /**
-     * The type of [DCMotor] used for the swerve module's drive motor.
+     * The type of [DCMotor] used for each swerve module's drive motor.
      */
     val DRIVE_MOTOR_TYPE: DCMotor = DCMotor.getFalcon500(1)
 
     /**
-     * The type of [DCMotor] used for the swerve module's angle motor.
+     * The type of [DCMotor] used for each swerve module's angle motor.
      */
     val ANGLE_MOTOR_TYPE: DCMotor = DCMotor.getFalcon500(1)
 
     /**
-     * The minimum [Voltage] the swerve module's drive motor can run at.
+     * The minimum [Voltage] each swerve module's drive motor can run at.
      */
     val DRIVE_MINIMUM_VOLTAGE: Voltage = Units.Millivolts.of(300.0)
 
     /**
-     * The minimum [Voltage] the swerve module's angle motor can run at.
+     * The minimum [Voltage] each swerve module's angle motor can run at.
      */
     val ANGLE_MINIMUM_VOLTAGE: Voltage = Units.Millivolts.of(200.0)
 
     /**
-     * The rotational inertia of the swerve module's drive motor.
+     * The rotational inertia of each swerve module's drive motor.
      */
     val STEER_ROTATIONAL_INERTIA: MomentOfInertia = Units.KilogramSquareMeters.of(0.03)
 
@@ -83,32 +83,32 @@ object PhysicalConstants {
     val OPTIMAL_VOLTAGE: Voltage = Units.Volts.of(12.0)
 
     /**
-     * The gear ratio of the swerve module's angle motor.
+     * The gear ratio of each swerve module's angle motor.
      */
     const val ANGLE_GEAR_RATIO: Double = 18.75
 
     /**
-     * The gear ratio of the swerve module's drive motor.
+     * The gear ratio of each swerve module's drive motor.
      */
     const val DRIVE_GEAR_RATIO: Double = 5.9
 
     /**
-     * The [Current] limit of the swerve module's angle motor.
+     * The [Current] limit of each swerve module's angle motor.
      */
     val ANGLE_CURRENT_LIMIT: Current = Units.Amps.of(30.0)
 
     /**
-     * The [Current] limit of the swerve module's drive motor.
+     * The [Current] limit of each swerve module's drive motor.
      */
     val DRIVE_CURRENT_LIMIT: Current = Units.Amps.of(40.0)
 
     /**
-     * The coefficient of friction of the swerve module's wheels.
+     * The coefficient of friction of each swerve module's wheels.
      */
-    const val WHEEL_COF: Double = 1.0
+    const val WHEEL_COF: Double = 1.19
 
     /**
-     * The [Distance] of the swerve module's wheel radius.
+     * The [Distance] of each swerve module's wheel diameter.
      */
-    val WHEEL_RADIUS: Distance = Units.Inches.of(4.0)
+    val WHEEL_DIAMETER: Distance = Units.Inches.of(4.0)
 }

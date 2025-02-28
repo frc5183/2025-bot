@@ -18,12 +18,12 @@ object AutoConstants {
             PhysicalConstants.MASS,
             PhysicalConstants.MOI,
             ModuleConfig(
-                PhysicalConstants.WHEEL_RADIUS,
-                PhysicalConstants.MAX_SPEED,
+                PhysicalConstants.WHEEL_DIAMETER.div(2.0), // radius, not diameter
+                Units.MetersPerSecond.of(Units.RadiansPerSecond.of(PhysicalConstants.DRIVE_MOTOR_TYPE.freeSpeedRadPerSec).`in`(Units.RotationsPerSecond).times(60).times(PhysicalConstants.DRIVE_GEAR_RATIO).times(PhysicalConstants.WHEEL_DIAMETER.`in`(Units.Meters))),
                 PhysicalConstants.WHEEL_COF,
                 PhysicalConstants.DRIVE_MOTOR_TYPE,
                 PhysicalConstants.DRIVE_CURRENT_LIMIT,
-                1, // 1 drive motor per module in swerve. TODO: Should this be a constant?
+                1, // 1 drive motor per module in swerve.
             ),
             FrontLeftSwerveModuleConstants.LOCATION,
             FrontRightSwerveModuleConstants.LOCATION,
@@ -40,6 +40,6 @@ object AutoConstants {
             PhysicalConstants.MAX_ACCELERATION,
             PhysicalConstants.MAX_ANGULAR_VELOCITY,
             PhysicalConstants.MAX_ANGULAR_ACCELERATION,
-            Units.Volt.of(12.0),
+            PhysicalConstants.OPTIMAL_VOLTAGE
         )
 }
