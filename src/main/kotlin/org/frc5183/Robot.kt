@@ -68,8 +68,8 @@ object Robot : LoggedRobot() {
      */
     private enum class AutoMode(
         val optionName: String,
-        val periodicFunction: () -> Unit,
-        val autoInitFunction: () -> Unit = { /* No op by default */ },
+        val autoInitFunction: (() -> Unit)?,
+        val periodicFunction: (() -> Unit)? = null,
     ) {
         CUSTOM_AUTO_1("Custom Auto Mode 1", ::autoMode1),
         CUSTOM_AUTO_2("Custom Auto Mode 2", ::autoMode2),
@@ -143,7 +143,7 @@ object Robot : LoggedRobot() {
         SmartDashboard.putData("Auto choices", autoModeChooser.sendableChooser)
 
         // todo debug sets the pose2d to into the field in sim
-        drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
+        //drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
 
         CommandScheduler.getInstance().onCommandInitialize {
             println("Command initialized: ${it.name}")
@@ -178,13 +178,15 @@ object Robot : LoggedRobot() {
         CommandScheduler.getInstance().cancelAll()
         selectedAutoMode = autoModeChooser.get() ?: AutoMode.default
         println("Selected auto mode: ${selectedAutoMode.optionName}")
-        selectedAutoMode.autoInitFunction.invoke()
+        selectedAutoMode.autoInitFunction?.invoke()
     }
 
-    override fun autonomousPeriodic() = selectedAutoMode.periodicFunction.invoke()
+    override fun autonomousPeriodic() {
+        selectedAutoMode.periodicFunction?.invoke()
+    }
 
     private fun autoMode1() {
-        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0)), drive, vision).schedule()
+        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0)), drive).schedule()
         /*
         val pose = Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))
 

@@ -15,5 +15,6 @@ object State {
       RobotBase.isReal() -> Mode.REAL
       else -> Mode.SIM
     }
+
     // val mode: Mode = Mode.REPLAY
 }

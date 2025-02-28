@@ -32,9 +32,9 @@ class SwerveDriveSubsystem(
     init {
         AutoBuilder.configure(
             { pose },
-            io::resetPose,
+            this::resetPose,
             { robotVelocity },
-            io::drive,
+            this::drive,
             PPHolonomicDriveController(
                 PIDConstants(
                     SwervePIDConstants.DRIVE_PID.p,
