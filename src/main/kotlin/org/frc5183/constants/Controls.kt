@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
+import org.frc5183.subsystems.drive.SwerveDriveSubsystem
+import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.target.FieldTarget
 
 /**
@@ -26,7 +28,7 @@ object Controls {
     val rotation: Double
         get() = DRIVER.rightX
 
-    val TELEOP_DRIVE_COMMAND: Command = TeleopDriveCommand()
+    lateinit var TELEOP_DRIVE_COMMAND: Command
 
     val BUTTON_DEBOUNCE_TIME: Time = Units.Seconds.of(1.0)
     val CONTROLS_EVENT_LOOP = EventLoop()
@@ -35,14 +37,21 @@ object Controls {
      * A function to be called during teleop init.
      * Registers all the buttons to their respective commands and the drive command.
      */
-    fun teleopInit() {
+    fun teleopInit(
+        drive: SwerveDriveSubsystem,
+        vision: VisionSubsystem,
+    ) {
+        if (!this::TELEOP_DRIVE_COMMAND.isInitialized) {
+            TELEOP_DRIVE_COMMAND = TeleopDriveCommand(drive)
+        }
+
         // D-PAD Up
-        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).onTrue(AimCommand(FieldTarget.Pipe))
+        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
 
         DRIVER.x().debounce(2.0).onTrue(
             InstantCommand({
                 println("DEBUG")
-                AutoAimAndShoot { DRIVER.x().asBoolean }.schedule()
+                AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
         )
 

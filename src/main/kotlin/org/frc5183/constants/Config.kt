@@ -10,6 +10,6 @@ import kotlin.time.Duration.Companion.seconds
  */
 object Config {
     const val VISION_POSE_ESTIMATION = true
-    val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape)
+    val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded) // https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
 }
