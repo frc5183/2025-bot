@@ -2,6 +2,7 @@ package org.frc5183.math.curve
 
 import edu.wpi.first.wpilibj.Timer
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 /**
  * Represents a curve that returns zero after a certain [time] has passed. Otherwise,
@@ -25,7 +26,7 @@ class TimedCurve(
     }
 
     override fun invoke(input: Double): Double {
-        return if (timer.hasElapsed(time.inWholeSeconds.toDouble())) {
+        return if (timer.hasElapsed(time.toDouble(DurationUnit.SECONDS))) {
             input
         } else {
             0.0
