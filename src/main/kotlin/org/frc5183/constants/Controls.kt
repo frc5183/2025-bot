@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import org.frc5183.commands.ClimbCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
@@ -99,6 +100,14 @@ object Controls {
                 AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
         )
+
+        // D-PAD Up
+        val climbUpCommand = ClimbCommand(climber, ClimbCommand.Direction.UP)
+        OPERATOR.povUp().whileTrue(climbUpCommand)
+
+        // D-PAD Down
+        val climbDownCommand = ClimbCommand(climber, ClimbCommand.Direction.DOWN)
+        OPERATOR.povDown().whileTrue(climbDownCommand)
 
         DRIVER.b().debounce(2.0).onTrue(
             InstantCommand({

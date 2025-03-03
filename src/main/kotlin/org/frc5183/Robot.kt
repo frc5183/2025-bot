@@ -1,20 +1,13 @@
 package org.frc5183
 
 import com.pathplanner.lib.commands.PathPlannerAuto
-import com.pathplanner.lib.path.GoalEndState
-import com.pathplanner.lib.path.PathConstraints
-import com.pathplanner.lib.path.PathPlannerPath
-import com.pathplanner.lib.pathfinding.Pathfinder
 import com.pathplanner.lib.pathfinding.Pathfinding
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
-import edu.wpi.first.math.Pair
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
@@ -24,7 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.drive.DriveToPose2d
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
-import org.frc5183.math.auto.pathfinding.LocalADStarAK
+import org.frc5183.subsystems.climber.ClimberSubsystem
+import org.frc5183.subsystems.climber.io.RealClimberIO
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
 import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
@@ -52,6 +46,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
+    private val climber: ClimberSubsystem
 
     val simulation: Boolean
         get() = isSimulation()
@@ -122,7 +117,6 @@ object Robot : LoggedRobot() {
             }
         }
 
-
         if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
@@ -141,6 +135,8 @@ object Robot : LoggedRobot() {
             )
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
+
+        climber = ClimberSubsystem(RealClimberIO(SparkMax(DeviceConstants.CLIMBER_CAN, DeviceConstants.CLIMBER_MOTOR_TYPE))) // todo: simulate this io
 
         CommandScheduler.getInstance().registerSubsystem(
             vision,
