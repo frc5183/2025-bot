@@ -1,6 +1,7 @@
 package org.frc5183.math.curve
 
 import kotlin.math.abs
+import kotlin.math.sign
 import kotlin.math.sqrt
 
 /**
@@ -18,7 +19,7 @@ class RadicalCurve(
     val b: Double,
 ) : Curve {
     override fun invoke(input: Double): Double {
-        val sign = if (input == 0.0) 1.0 else input / abs(input)
+        val sign = if (input == 0.0) 1.0 else input.sign
 
         return sign * (a * sqrt(abs(input)) + b)
     }

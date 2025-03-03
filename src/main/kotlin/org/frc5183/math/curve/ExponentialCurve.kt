@@ -2,6 +2,7 @@ package org.frc5183.math.curve
 
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.sign
 
 /**
  * Represents an exponential [Curve] with some modifications:
@@ -18,7 +19,7 @@ class ExponentialCurve(
     val base: Double,
 ) : Curve {
     override operator fun invoke(input: Double): Double {
-        val sign = if (input == 0.0) 1.0 else input / abs(input)
+        val sign = if (input == 0.0) 1.0 else input.sign
 
         return sign * ((((1 + base).pow(abs(input)) - 1)) / base)
     }
