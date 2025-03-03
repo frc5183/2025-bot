@@ -26,7 +26,7 @@ class TimedCurve(
     }
 
     override fun invoke(input: Double): Double {
-        return if (timer.hasElapsed(time.toDouble(DurationUnit.SECONDS))) {
+        return if (!timer.hasElapsed(time.toDouble(DurationUnit.SECONDS))) {
             input
         } else {
             0.0
