@@ -56,35 +56,38 @@ object Controls {
         drive: SwerveDriveSubsystem,
         vision: VisionSubsystem,
     ) {
-        TELEOP_DRIVE_COMMAND = TeleopDriveCommand(
-            drive,
-            xInput = { DRIVER.leftX },
-            yInput = { DRIVER.leftY },
-            rotationInput = { DRIVER.rightX },
-            translationCurve = MultiCurve(
-                listOf(
-                    PiecewiseCurve(
-                        mapOf(
-                            {input: Double -> abs(input) < TRANSLATION_DEADBAND} to NullCurve(), // Apply a deadband
-                            {input: Double -> abs(input) > TRANSLATION_DEADBAND} to TRANSLATION_CURVE // Apply our actual curve.
-                        )
+        TELEOP_DRIVE_COMMAND =
+            TeleopDriveCommand(
+                drive,
+                xInput = { DRIVER.leftX },
+                yInput = { DRIVER.leftY },
+                rotationInput = { DRIVER.rightX },
+                translationCurve =
+                    MultiCurve(
+                        listOf(
+                            PiecewiseCurve(
+                                linkedMapOf(
+                                    { input: Double -> abs(input) < TRANSLATION_DEADBAND } to NullCurve(), // Apply a deadband
+                                    { input: Double -> abs(input) > TRANSLATION_DEADBAND } to TRANSLATION_CURVE, // Apply our actual curve.
+                                ),
+                            ),
+                            LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+                        ),
                     ),
-                    LimitedCurve(-1.0, 1.0) // Clamp the output to [-1, 1]
-                )
-            ),
-            rotationCurve = MultiCurve(
-                listOf(
-                    PiecewiseCurve(
-                        mapOf(
-                            {input: Double -> abs(input) < ROTATION_DEADBAND} to NullCurve(), // Apply a deadband
-                            {input: Double -> abs(input) > ROTATION_DEADBAND} to ROTATION_CURVE // Apply our actual curve.
-                        )
+                rotationCurve =
+                    MultiCurve(
+                        listOf(
+                            PiecewiseCurve(
+                                linkedMapOf(
+                                    { input: Double -> abs(input) < ROTATION_DEADBAND } to NullCurve(), // Apply a deadband
+                                    { input: Double -> abs(input) > ROTATION_DEADBAND } to ROTATION_CURVE, // Apply our actual curve.
+                                ),
+                            ),
+                            LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+                        ),
                     ),
-                    LimitedCurve(-1.0, 1.0) // Clamp the output to [-1, 1]
-                )
-            ),
-            fieldRelative = true,
-        )
+                fieldRelative = true,
+            )
 
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
 

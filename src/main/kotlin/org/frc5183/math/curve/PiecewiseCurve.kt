@@ -12,7 +12,7 @@ class PiecewiseCurve(
      * A map of boolean-returning lambdas to [Curve]s.
      * The first lambda that returns true will be used to calculate the output.
      */
-    val curves: LinkedHashMap<(Double) -> Boolean, Curve>
+    val curves: LinkedHashMap<(Double) -> Boolean, Curve>,
 ) : Curve {
     override fun invoke(input: Double): Double {
         for ((condition, curve) in curves) {
