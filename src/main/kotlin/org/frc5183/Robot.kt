@@ -122,7 +122,8 @@ object Robot : LoggedRobot() {
             }
         }
 
-        //Logger.start()
+
+        if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.
@@ -148,9 +149,7 @@ object Robot : LoggedRobot() {
 
         SmartDashboard.putData("Auto choices", autoModeChooser.sendableChooser)
 
-        // todo debug sets the pose2d to into the field in sim
-        //drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
-
+        // todo: debug
         CommandScheduler.getInstance().onCommandInitialize {
             println("Command initialized: ${it.name}")
         }
@@ -168,6 +167,7 @@ object Robot : LoggedRobot() {
         CommandScheduler.getInstance().onCommandInterrupt { it: Command ->
             println("Command interrupted: ${it.name}")
         }
+        // end todo
     }
 
     override fun robotPeriodic() {
@@ -219,25 +219,21 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        //Controls.teleopInit(drive, vision) // Register all teleop controls.
+        Controls.teleopInit(drive, vision) // Register all teleop controls.
+
+        // todo debug sets the pose2d to into the field in sim
+        drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
     }
 
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
-        //Controls.teleopPeriodic()
-        val maxTranslationMPS = PhysicalConstants.MAX_SPEED.`in`(Units.MetersPerSecond)
-        val xSpeed = Controls.ySpeed * maxTranslationMPS
-        val ySpeed = Controls.xSpeed * maxTranslationMPS
-
-        val maxRotationRPS = PhysicalConstants.MAX_ANGULAR_VELOCITY.`in`(Units.RotationsPerSecond)
-        val rotationSpeed = Controls.rotation * maxRotationRPS
-
-        drive.drive(ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, drive.pose.rotation))
+        Controls.teleopPeriodic()
     }
 
     /** This method is called once when the robot is disabled.  */
     override fun disabledInit() {
         CommandScheduler.getInstance().cancelAll()
+
         drive.setMotorBrake(true)
         brakeTimer.reset()
         brakeTimer.start()
