@@ -1,9 +1,12 @@
 package org.frc5183.math.curve
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
- * Represents a radical [Curve] in the form of y = [a]sqrt(x) + [b]. (where y is the output and x is the input)
+ * Represents a radical [Curve] in the form of y = (x/abs(input))*([a]sqrt(abs(x)) + [b]). (where y is the output and x is the input)
+ *
+ * This differs from a normal radical curve because it is symmetric about the y-axis to allow for negative inputs.
  */
 class RadicalCurve(
     /**
@@ -17,6 +20,6 @@ class RadicalCurve(
     val b: Double
 ) : Curve {
     override fun invoke(input: Double): Double {
-        return a * sqrt(input) + b
+        return (input/abs(input)) * (a * sqrt(abs(input)) + b)
     }
 }
