@@ -8,13 +8,10 @@ class LinearCurve(
      * The slope of the line.
      */
     val m: Double,
-
     /**
      * The y-intercept of the line.
      */
-    val b: Double
+    val b: Double,
 ) : Curve {
-    override fun invoke(input: Double): Double {
-        return m * input + b
-    }
+    override fun invoke(input: Double): Double = m * input + b
 }

@@ -7,7 +7,5 @@ class LimitedCurve(
     val min: Double,
     val max: Double,
 ) : Curve {
-    override operator fun invoke(input: Double): Double {
-        return input.coerceIn(min, max)
-    }
+    override operator fun invoke(input: Double): Double = input.coerceIn(min, max)
 }

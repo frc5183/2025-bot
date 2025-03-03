@@ -10,7 +10,7 @@ class MultiCurve(
     /**
      * The list of [Curve]s to combine. Applied in the order they are in the list.
      */
-    val curves: List<Curve>
+    val curves: List<Curve>,
 ) : Curve {
     override fun invoke(input: Double): Double {
         var currentInput = input

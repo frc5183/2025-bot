@@ -14,7 +14,7 @@ class TimedCurve(
     /**
      * The duration of time after which the curve will return zero.
      */
-    val time: Duration
+    val time: Duration,
 ) : Curve {
     /**
      * The [Timer] which tracks the time since the curve was created.
@@ -25,11 +25,10 @@ class TimedCurve(
         timer.start()
     }
 
-    override fun invoke(input: Double): Double {
-        return if (!timer.hasElapsed(time.toDouble(DurationUnit.SECONDS))) {
+    override fun invoke(input: Double): Double =
+        if (!timer.hasElapsed(time.toDouble(DurationUnit.SECONDS))) {
             input
         } else {
             0.0
         }
-    }
 }

@@ -8,18 +8,14 @@ class QuadraticCurve(
      * The coefficient of the x^2 term in the quadratic equation.
      */
     val a: Double,
-
     /**
      * The coefficient of the x term in the quadratic equation.
      */
     val b: Double,
-
     /**
      * The constant term in the quadratic equation.
      */
-    val c: Double
+    val c: Double,
 ) : Curve {
-    override fun invoke(input: Double): Double {
-        return a * input * input + b * input + c
-    }
+    override fun invoke(input: Double): Double = a * input * input + b * input + c
 }
