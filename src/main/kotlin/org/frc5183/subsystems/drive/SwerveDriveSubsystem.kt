@@ -33,7 +33,6 @@ class SwerveDriveSubsystem(
     init {
         SwerveDriveTelemetry.verbosity = LoggingConstants.SWERVE_VERBOSITY
 
-        /*
         AutoBuilder.configure(
             { pose },
             this::resetPose,
@@ -56,8 +55,6 @@ class SwerveDriveSubsystem(
             this,
             vision,
         )
-
-         */
 
         // https://pathplanner.dev/pplib-follow-a-single-path.html#java-warmup
         PathfindingCommand.warmupCommand().schedule()
