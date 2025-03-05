@@ -14,7 +14,7 @@ object FrontRightSwerveModuleConstants : SwerveModuleConstants {
         = "frontright"
 
     override val LOCATION: Translation2d
-        = Translation2d(Units.Inches.of(12.25), Units.Inches.of(-15.0))
+        = Translation2d(Units.Inches.of(12.5), Units.Inches.of(-12.0))
 
     override val ABSOLUTE_ENCODER: SwerveAbsoluteEncoder
         = CANCoderSwerve(13)
