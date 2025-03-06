@@ -1,6 +1,7 @@
 package org.frc5183.commands.elevator
 
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.constants.Config
 import edu.wpi.first.wpilibj2.command.Command
 
 class RaiseElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
@@ -12,7 +13,7 @@ class RaiseElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
     }
 
     override fun initialize() {
-      if (elevator.currentStage >= 4) {
+      if (elevator.currentStage >= Config.ELEVATOR_STAGES.size) {
         invalidStage = true
         return
       }

@@ -1,6 +1,7 @@
 package org.frc5183.commands.elevator
 
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.constants.Config
 import edu.wpi.first.wpilibj2.command.Command
 
 class LowerElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
