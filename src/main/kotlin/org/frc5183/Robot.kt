@@ -9,6 +9,7 @@ import com.pathplanner.lib.path.PathPlannerPath
 import com.pathplanner.lib.pathfinding.Pathfinder
 import com.pathplanner.lib.pathfinding.Pathfinding
 import com.revrobotics.spark.SparkMax
+import com.revrobotics.ColorSensorV3
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
@@ -23,8 +24,10 @@ import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
 import edu.wpi.first.wpilibj.DigitalInput
+import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.DriveToPose2d
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
@@ -44,6 +47,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser
 import org.littletonrobotics.junction.networktables.NT4Publisher
 import org.littletonrobotics.junction.wpilog.WPILOGReader
 import org.littletonrobotics.junction.wpilog.WPILOGWriter
+import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.coral.io.RealCoralIO
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -59,6 +64,7 @@ object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
     private val elevator: ElevatorSubsystem
+    private val coralSubsystem: CoralSubsystem
 
     val simulation: Boolean
         get() = isSimulation()
@@ -128,9 +134,19 @@ object Robot : LoggedRobot() {
 
         elevator = ElevatorSubsystem(RealElevatorIO(SparkMax(DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE), DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID)))
 
+        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
+
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
+            elevator,
+            coralSubsystem,
+        )
+
+        NamedCommands.registerCommands(
+          mapOf(
+            "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+          )
         )
 
         autoChooser = LoggedDashboardChooser("Selected Auto Routine", AutoBuilder.buildAutoChooser())
@@ -179,7 +195,7 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision, elevator) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, elevator, coralSubsystem) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
