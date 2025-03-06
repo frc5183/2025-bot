@@ -5,10 +5,7 @@ import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.pathfinding.Pathfinding
 import com.revrobotics.spark.SparkMax
-<<<<<<< HEAD
-=======
 import com.revrobotics.ColorSensorV3
->>>>>>> master
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
@@ -56,11 +53,8 @@ import org.frc5183.subsystems.coral.io.RealCoralIO
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
-<<<<<<< HEAD
     private val climber: ClimberSubsystem
-=======
     private val coralSubsystem: CoralSubsystem
->>>>>>> master
 
     val simulation: Boolean
         get() = isSimulation()
@@ -127,15 +121,13 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
-<<<<<<< HEAD
         climber = ClimberSubsystem(RealClimberIO(SparkMax(DeviceConstants.CLIMBER_CAN, DeviceConstants.CLIMBER_MOTOR_TYPE))) // todo: simulate this io
-=======
         coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
->>>>>>> master
 
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
+            climber,
             coralSubsystem,
         )
 
@@ -191,7 +183,7 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision, coralSubsystem) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, climber, coralSubsystem) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))

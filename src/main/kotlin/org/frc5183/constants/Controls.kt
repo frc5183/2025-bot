@@ -5,17 +5,18 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import org.frc5183.commands.ClimbCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
 import org.frc5183.commands.coral.IntakeCoralCommand
 import org.frc5183.commands.coral.ShootCoralCommand
+import org.frc5183.commands.climber.PullClimberCommand
 import org.frc5183.commands.climber.DriveClimberCommand
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.target.FieldTarget
 import kotlin.math.abs
 import kotlin.time.Duration
@@ -66,6 +67,7 @@ object Controls {
     fun teleopInit(
         drive: SwerveDriveSubsystem,
         vision: VisionSubsystem,
+        climber: ClimberSubsystem,
         coralSubsystem: CoralSubsystem,
     ) {
         TELEOP_DRIVE_COMMAND =
@@ -123,10 +125,10 @@ object Controls {
         // Coral Commands End
         
         // Climber Command Start
-        OPERATOR.rightTrigger().whileTrue(PullClimberCommand(coralSubsystem))
+        OPERATOR.rightTrigger().whileTrue(PullClimberCommand(climber))
         OPERATOR.rightStick().toggleOnTrue(
           DriveClimberCommand(
-            coralSubsystem, 
+            climber, 
             input = { OPERATOR.rightY }, 
             inputCurve = MultiCurve(listOf(
               PiecewiseCurve(
@@ -137,6 +139,7 @@ object Controls {
               ),
               LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
             ))
+          )
         )
 
         // Operator Commands End
