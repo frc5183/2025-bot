@@ -5,7 +5,11 @@ import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.wpilibj.DigitalInput
 
-class RealElevatorIO(private val motor: SparkMax, private val bottomLimitSwitch: DigitalInput, private val topLimitSwitch: DigitalInput) : ElevatorIO {
+class RealElevatorIO(
+    private val motor: SparkMax,
+    private val bottomLimitSwitch: DigitalInput,
+    private val topLimitSwitch: DigitalInput,
+) : ElevatorIO {
     override val motorEncoder: Angle
         get() = Units.Rotations.of(motor.encoder.position)
 
@@ -15,7 +19,10 @@ class RealElevatorIO(private val motor: SparkMax, private val bottomLimitSwitch:
     override val topLimitSwitchTriggered: Boolean
         get() = topLimitSwitch.get()
 
-    override fun updateInputs(inputs: ElevatorIO.ElevatorIOInputs, currentStage: Int) {
+    override fun updateInputs(
+        inputs: ElevatorIO.ElevatorIOInputs,
+        currentStage: Int,
+    ) {
         inputs.motorEncoder = motorEncoder.`in`(Units.Rotations)
         inputs.currentStage = currentStage
         inputs.bottomLimitSwitchTriggered = bottomLimitSwitch.get()
