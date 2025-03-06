@@ -2,6 +2,11 @@ package org.frc5183.constants
 
 import com.revrobotics.spark.SparkLowLevel
 import com.studica.frc.AHRS.NavXComType
+import edu.wpi.first.math.VecBuilder
+import edu.wpi.first.math.geometry.Rotation3d
+import edu.wpi.first.math.geometry.Transform3d
+import edu.wpi.first.wpilibj.I2C
+import org.frc5183.hardware.vision.Camera
 
 /**
  * Device IDs connected to the robot.
@@ -9,6 +14,11 @@ import com.studica.frc.AHRS.NavXComType
 object DeviceConstants {
     const val CLIMBER_CAN: Int = 3
     val CLIMBER_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless
+
+
+    const val CORAL_MOTOR_ID: Int = 6
+    val CORAL_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless // Neo 550
+    val CORAL_COLOR_SENSOR_PORT: I2C.Port = I2C.Port.kOnboard
 
     /*
         val FRONT_CAMERA: Camera =
@@ -26,6 +36,6 @@ object DeviceConstants {
                 VecBuilder.fill(0.5, 0.5, 1.0),
             )
 
-     */
+         */
     val IMU_PORT: NavXComType = NavXComType.kMXP_SPI
 }

@@ -9,6 +9,15 @@ import kotlin.time.Duration.Companion.seconds
  * Miscellaneous configuration constants.
  */
 object Config {
+    val CORAL_SHOOT_TIME: Duration = 1.seconds
+    const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo
+    const val CORAL_PROXIMITY_THRESHOLD: Int = 10 // todo
+
+    /**
+     * The amount of time to continue running the intake motor for after
+     * the coral has been detected.
+     */
+    val CORAL_INTAKE_TIME: Duration = 1.seconds
     const val VISION_POSE_ESTIMATION = false
     val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded) // https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds

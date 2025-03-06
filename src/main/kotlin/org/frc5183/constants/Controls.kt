@@ -1,7 +1,5 @@
 package org.frc5183.constants
 
-import edu.wpi.first.units.Units
-import edu.wpi.first.units.measure.Time
 import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
@@ -11,11 +9,17 @@ import org.frc5183.commands.ClimbCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
+import org.frc5183.commands.coral.IntakeCoralCommand
+import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
+import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.target.FieldTarget
 import kotlin.math.abs
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 /**
  * An object representing the controls of the robot.
@@ -46,7 +50,7 @@ object Controls {
      */
     val ROTATION_CURVE = ExponentialCurve(50.0)
 
-    val BUTTON_DEBOUNCE_TIME: Time = Units.Seconds.of(1.0)
+    val BUTTON_DEBOUNCE_TIME: Duration = 0.5.seconds
     val CONTROLS_EVENT_LOOP = EventLoop()
 
     /**
@@ -56,6 +60,7 @@ object Controls {
     fun teleopInit(
         drive: SwerveDriveSubsystem,
         vision: VisionSubsystem,
+        coralSubsystem: CoralSubsystem,
     ) {
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
@@ -93,14 +98,24 @@ object Controls {
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
 
         // D-PAD Up
-        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
+        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
 
-        DRIVER.x().debounce(2.0).onTrue(
+        DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
             InstantCommand({
                 AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
         )
 
+        // Operator Commands Start
+        
+        // Coral Commands Start
+        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(ShootCoralCommand(coralSubsystem))
+
+        // Reset Coral State
+        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(InstantCommand({ coralSubsystem.clearCoral() }))
+        // Coral Commands End
+        
         // D-PAD Up
         val climbUpCommand = ClimbCommand(climber, ClimbCommand.Direction.UP)
         OPERATOR.povUp().whileTrue(climbUpCommand)
@@ -109,14 +124,16 @@ object Controls {
         val climbDownCommand = ClimbCommand(climber, ClimbCommand.Direction.DOWN)
         OPERATOR.povDown().whileTrue(climbDownCommand)
 
-        DRIVER.b().debounce(2.0).onTrue(
+        // Operator Commands End
+
+        DRIVER.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
             InstantCommand({
                 println("Driver cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()
             }),
         )
 
-        OPERATOR.b().debounce(2.0).onTrue(
+        OPERATOR.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
             InstantCommand({
                 println("Operator cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()

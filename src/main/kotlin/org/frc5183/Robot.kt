@@ -1,8 +1,14 @@
 package org.frc5183
 
+import com.pathplanner.lib.auto.AutoBuilder
+import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.pathfinding.Pathfinding
 import com.revrobotics.spark.SparkMax
+<<<<<<< HEAD
+=======
+import com.revrobotics.ColorSensorV3
+>>>>>>> master
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
@@ -12,8 +18,10 @@ import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
+import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.DriveToPose2d
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
@@ -32,6 +40,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser
 import org.littletonrobotics.junction.networktables.NT4Publisher
 import org.littletonrobotics.junction.wpilog.WPILOGReader
 import org.littletonrobotics.junction.wpilog.WPILOGWriter
+import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.coral.io.RealCoralIO
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -46,41 +56,22 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
+<<<<<<< HEAD
     private val climber: ClimberSubsystem
+=======
+    private val coralSubsystem: CoralSubsystem
+>>>>>>> master
 
     val simulation: Boolean
         get() = isSimulation()
 
-    val brakeTimer = Timer()
-
-    private var selectedAutoMode = AutoMode.default
-    private val autoModeChooser =
-        LoggedDashboardChooser<AutoMode>("Auto Mode").also { chooser ->
-            AutoMode.entries.forEach { chooser.addOption(it.optionName, it) }
-            chooser.addDefaultOption(AutoMode.default.optionName, AutoMode.default)
-        }
-
     /**
-     * A enumeration of the available autonomous modes.
-     *
-     * @param optionName The name for the [autoModeChooser] option.
-     * @param periodicFunction The function that is called in the [autonomousPeriodic] function each time it is called.
-     * @param autoInitFunction An optional function that is called in the [autonomousInit] function.
+     * A timer to keep track of how long the robot has been disabled for so that
+     * we can disable brake mode after a little bit of time.
      */
-    private enum class AutoMode(
-        val optionName: String,
-        val autoInitFunction: (() -> Unit)?,
-        val periodicFunction: (() -> Unit)? = null,
-    ) {
-        CUSTOM_AUTO_1("Custom Auto Mode 1", ::autoMode1),
-        CUSTOM_AUTO_2("Custom Auto Mode 2", ::autoMode2),
-        ;
+    private val brakeTimer = Timer()
 
-        companion object {
-            /** The default auto mode. */
-            val default = CUSTOM_AUTO_1
-        }
-    }
+    private val autoChooser: LoggedDashboardChooser<Command>
 
     init
     {
@@ -136,14 +127,26 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
+<<<<<<< HEAD
         climber = ClimberSubsystem(RealClimberIO(SparkMax(DeviceConstants.CLIMBER_CAN, DeviceConstants.CLIMBER_MOTOR_TYPE))) // todo: simulate this io
+=======
+        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
+>>>>>>> master
 
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
+            coralSubsystem,
         )
 
-        SmartDashboard.putData("Auto choices", autoModeChooser.sendableChooser)
+        NamedCommands.registerCommands(
+          mapOf(
+            "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+          )
+        )
+
+        autoChooser = LoggedDashboardChooser("Selected Auto Routine", AutoBuilder.buildAutoChooser())
+        SmartDashboard.putData("Auto choices", autoChooser.sendableChooser)
 
         // todo: debug
         CommandScheduler.getInstance().onCommandInitialize {
@@ -178,44 +181,17 @@ object Robot : LoggedRobot() {
 
     override fun autonomousInit() {
         CommandScheduler.getInstance().cancelAll()
-        selectedAutoMode = autoModeChooser.get() ?: AutoMode.default
-        println("Selected auto mode: ${selectedAutoMode.optionName}")
-        selectedAutoMode.autoInitFunction?.invoke()
+        autoChooser.get().schedule()
     }
 
     override fun autonomousPeriodic() {
-        selectedAutoMode.periodicFunction?.invoke()
-    }
-
-    private fun autoMode1() {
-        DriveToPose2d(Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0)), drive).schedule()
-        /*
-        val pose = Pose2d(15.0, 3.0, Rotation2d(0.0, 0.0))
-
-        AutoBuilder
-            .pathfindThenFollowPath(
-                PathPlannerPath(
-                    PathPlannerPath.waypointsFromPoses(
-                        Pose2d(SwerveDriveSubsystem.pose.translation, Rotation2d.kZero),
-                        Pose2d(pose.translation, Rotation2d.kZero),
-                    ),
-                    AutoConstants.PATH_CONSTRAINTS,
-                    null,
-                    GoalEndState(0.0, pose.rotation),
-                ),
-                AutoConstants.PATH_CONSTRAINTS,
-            ).schedule()
-         */
-    }
-
-    private fun autoMode2() {
-        PathPlannerAuto("Auto 2").schedule()
+        // Do Nothing
     }
 
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, coralSubsystem) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
