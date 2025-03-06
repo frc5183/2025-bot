@@ -21,9 +21,11 @@ class ElevatorSubsystem(val io: ElevatorIO) : Subsystem {
     currentStage = Config.ELEVATOR_STAGES.indexOfFirst { it > io.motorEncoder }
 
     if (io.bottomLimitSwitchTriggered) {
-      io.stopElevator()
-      io.resetEncoder()
+      stopElevator()
+      resetEncoder()
     }
+
+    if (io.topLimitSwitchTriggered) stopElevator()
   }
 
   /**

@@ -134,7 +134,15 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
-        elevator = ElevatorSubsystem(RealElevatorIO(SparkMax(DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE), DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID)))
+        elevator = ElevatorSubsystem(
+          RealElevatorIO(
+            SparkMax(
+              DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
+            ),
+            DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
+            DigitalInput(DeviceConstants.ELEVATOR_TOP_LIMIT_SWITCH_ID),
+          )
+        )
 
         coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
 
