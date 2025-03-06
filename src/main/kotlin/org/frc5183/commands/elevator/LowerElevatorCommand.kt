@@ -4,6 +4,7 @@ import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import edu.wpi.first.wpilibj2.command.Command
 
 class LowerElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
+    private var invalidStage: Boolean = false
     private var desiredStage: Int = -1 // lateinit primitives are annoying.
 
     init {
@@ -11,12 +12,16 @@ class LowerElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
     }
 
     override fun initialize() {
+      if (elevator.currentStage <= 0) {
+        invalidStage = true
+        return
+      }
       desiredStage = elevator.currentStage - 1
     }
 
     override fun execute() {
-        elevator.raiseElevator()
+        elevator.lowerElevator()
     }
 
-    override fun isFinished() = desiredStage <= elevator.currentStage
+    override fun isFinished() = elevator.currentStage <= desiredStage || invalidStage
 }
