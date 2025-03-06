@@ -11,6 +11,7 @@ import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
 import org.frc5183.commands.coral.IntakeCoralCommand
 import org.frc5183.commands.coral.ShootCoralCommand
+import org.frc5183.commands.climber.DriveClimberCommand
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
@@ -49,6 +50,11 @@ object Controls {
      * The curve applied to the rotation input, among other input filtering (deadband, range clamps, etc.)
      */
     val ROTATION_CURVE = ExponentialCurve(50.0)
+
+    /**
+     * The curve applied to the climb input, among other input filtering (deadband, range clamps, etc.)
+     */
+    val CLIMB_CURVE = LinearCurve(1.0, 0.0)
 
     val BUTTON_DEBOUNCE_TIME: Duration = 0.5.seconds
     val CONTROLS_EVENT_LOOP = EventLoop()
@@ -109,20 +115,29 @@ object Controls {
         // Operator Commands Start
         
         // Coral Commands Start
-        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(ShootCoralCommand(coralSubsystem))
 
         // Reset Coral State
-        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(InstantCommand({ coralSubsystem.clearCoral() }))
+        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(InstantCommand({ coralSubsystem.clearCoral() }))
         // Coral Commands End
         
-        // D-PAD Up
-        val climbUpCommand = ClimbCommand(climber, ClimbCommand.Direction.UP)
-        OPERATOR.povUp().whileTrue(climbUpCommand)
-
-        // D-PAD Down
-        val climbDownCommand = ClimbCommand(climber, ClimbCommand.Direction.DOWN)
-        OPERATOR.povDown().whileTrue(climbDownCommand)
+        // Climber Command Start
+        OPERATOR.rightTrigger().whileTrue(PullClimberCommand(coralSubsystem))
+        OPERATOR.rightStick().toggleOnTrue(
+          DriveClimberCommand(
+            coralSubsystem, 
+            input = { OPERATOR.rightY }, 
+            inputCurve = MultiCurve(listOf(
+              PiecewiseCurve(
+                linkedMapOf(
+                  { input: Double -> abs(input) < TRANSLATION_DEADBAND } to NullCurve(), // Apply a deadband
+                  { input: Double -> abs(input) > TRANSLATION_DEADBAND } to CLIMB_CURVE, // Apply our actual curve.
+                ),
+              ),
+              LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+            ))
+        )
 
         // Operator Commands End
 
