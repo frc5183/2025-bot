@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.DriveToPose2d
+import org.frc5183.commands.elevator.RaiseElevatorCommand
+import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
 import org.frc5183.math.auto.pathfinding.LocalADStarAK
@@ -146,6 +148,8 @@ object Robot : LoggedRobot() {
         NamedCommands.registerCommands(
           mapOf(
             "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+            "Raise Elevator" to RaiseElevatorCommand(elevator),
+            "Lower Elevator" to LowerElevatorCommand(elevator),
           )
         )
 
