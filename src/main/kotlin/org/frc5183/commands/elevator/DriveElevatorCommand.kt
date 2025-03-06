@@ -4,7 +4,7 @@ import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.math.curve.Curve
 import edu.wpi.first.wpilibj2.command.Command
 
-class TeleopElevatorCommand(val elevator: ElevatorSubsystem, val input: () -> Double, val inputCurve: Curve) : Command() {
+class DriveElevatorCommand(val elevator: ElevatorSubsystem, val input: () -> Double, val inputCurve: Curve) : Command() {
     init {
         addRequirements(elevator)
     }

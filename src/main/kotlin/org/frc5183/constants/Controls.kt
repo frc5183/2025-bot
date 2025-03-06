@@ -5,20 +5,20 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import org.frc5183.commands.drive.AimCommand
-import org.frc5183.commands.drive.TeleopDriveCommand
-import org.frc5183.commands.teleop.AutoAimAndShoot
 import org.frc5183.commands.coral.IntakeCoralCommand
 import org.frc5183.commands.coral.ShootCoralCommand
-import org.frc5183.math.curve.*
-import org.frc5183.subsystems.drive.SwerveDriveSubsystem
-import org.frc5183.subsystems.vision.VisionSubsystem
-import org.frc5183.subsystems.elevator.ElevatorSubsystem
-import org.frc5183.subsystems.coral.CoralSubsystem
-import org.frc5183.target.FieldTarget
+import org.frc5183.commands.drive.AimCommand
+import org.frc5183.commands.drive.TeleopDriveCommand
+import org.frc5183.commands.elevator.DriveElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.commands.elevator.RaiseElevatorCommand
-import org.frc5183.commands.elevator.TeleopElevatorCommand
+import org.frc5183.commands.teleop.AutoAimAndShoot
+import org.frc5183.math.curve.*
+import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.drive.SwerveDriveSubsystem
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.subsystems.vision.VisionSubsystem
+import org.frc5183.target.FieldTarget
 import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -60,7 +60,6 @@ object Controls {
 
     val BUTTON_DEBOUNCE_TIME: Duration = 0.5.seconds
     val CONTROLS_EVENT_LOOP = EventLoop()
-
 
     /**
      * A function to be called during teleop init.
@@ -117,36 +116,41 @@ object Controls {
         )
 
         // Operator Commands Start
-        
+
         // Coral Commands Start
         OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(ShootCoralCommand(coralSubsystem))
 
         // Reset Coral State
-        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(InstantCommand({ coralSubsystem.clearCoral() }))
+        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
+            InstantCommand({
+                coralSubsystem.clearCoral()
+            }),
+        )
         // Coral Commands End
-        
+
         // Elevator Commands Start
-        
+
         OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(RaiseElevatorCommand(elevator))
         OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(LowerElevatorCommand(elevator))
 
-        OPERATOR.leftTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).toggleOnTrue(
-          TeleopElevatorCommand(
-            elevator,
-            input = { OPERATOR.leftY },
-            inputCurve = MultiCurve(
-              listOf(
-                PiecewiseCurve(
-                  linkedMapOf(
-                    { input: Double -> abs(input) < ROTATION_DEADBAND } to NullCurve(), // Apply a deadband.
-                    { input: Double -> abs(input) > ROTATION_DEADBAND } to ELEVATOR_CURVE // Apply our actual curve.
-                  )
-                ),
-                LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
-              )
-            )
-          )
+        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).toggleOnTrue(
+            DriveElevatorCommand(
+                elevator,
+                input = { OPERATOR.leftY },
+                inputCurve =
+                    MultiCurve(
+                        listOf(
+                            PiecewiseCurve(
+                                linkedMapOf(
+                                    { input: Double -> abs(input) < ROTATION_DEADBAND } to NullCurve(), // Apply a deadband.
+                                    { input: Double -> abs(input) > ROTATION_DEADBAND } to ELEVATOR_CURVE, // Apply our actual curve.
+                                ),
+                            ),
+                            LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+                        ),
+                    ),
+            ),
         )
 
         // Elevator Commands Stop
