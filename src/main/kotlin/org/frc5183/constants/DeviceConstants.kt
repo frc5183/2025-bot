@@ -1,6 +1,7 @@
 package org.frc5183.constants
 
 import com.studica.frc.AHRS.NavXComType
+import com.revrobotics.spark.SparkLowLevel
 import edu.wpi.first.math.VecBuilder
 import edu.wpi.first.math.geometry.Rotation3d
 import edu.wpi.first.math.geometry.Transform3d
@@ -10,6 +11,9 @@ import org.frc5183.hardware.vision.Camera
  * Device IDs connected to the robot.
  */
 object DeviceConstants {
+  const val ELEVATOR_MOTOR_ID: Int = 4
+  val ELEVATOR_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless
+  const val ELEVATOR_BOTTOM_LIMIT_SWITCH_ID: Int = 1
     /*
     val FRONT_CAMERA: Camera =
         Camera(

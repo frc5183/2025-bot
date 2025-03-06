@@ -8,6 +8,7 @@ import com.pathplanner.lib.path.PathConstraints
 import com.pathplanner.lib.path.PathPlannerPath
 import com.pathplanner.lib.pathfinding.Pathfinder
 import com.pathplanner.lib.pathfinding.Pathfinding
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
+import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.drive.DriveToPose2d
@@ -30,8 +32,10 @@ import org.frc5183.math.auto.pathfinding.LocalADStarAK
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
 import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.vision.io.RealVisionIO
+import org.frc5183.subsystems.elevator.io.RealElevatorIO
 import org.frc5183.subsystems.vision.io.SimulatedVisionIO
 import org.littletonrobotics.junction.LogFileUtil
 import org.littletonrobotics.junction.LoggedRobot
@@ -54,6 +58,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
+    private val elevator: ElevatorSubsystem
 
     val simulation: Boolean
         get() = isSimulation()
@@ -121,6 +126,8 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
+        elevator = ElevatorSubsystem(RealElevatorIO(SparkMax(DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE), DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID)))
+
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
@@ -172,7 +179,7 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, elevator) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))

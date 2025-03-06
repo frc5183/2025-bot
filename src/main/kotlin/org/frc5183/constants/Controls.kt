@@ -13,7 +13,11 @@ import org.frc5183.commands.teleop.AutoAimAndShoot
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.target.FieldTarget
+import org.frc5183.commands.elevator.LowerElevatorCommand
+import org.frc5183.commands.elevator.RaiseElevatorCommand
+import org.frc5183.commands.elevator.TeleopElevatorCommand
 import kotlin.math.abs
 
 /**
@@ -45,8 +49,14 @@ object Controls {
      */
     val ROTATION_CURVE = ExponentialCurve(50.0)
 
+    /**
+     * The curve applied to manual elevator control with joystick.
+     */
+    val ELEVATOR_CURVE = LinearCurve(1.0, 0.0)
+
     val BUTTON_DEBOUNCE_TIME: Time = Units.Seconds.of(1.0)
     val CONTROLS_EVENT_LOOP = EventLoop()
+
 
     /**
      * A function to be called during teleop init.
@@ -55,6 +65,7 @@ object Controls {
     fun teleopInit(
         drive: SwerveDriveSubsystem,
         vision: VisionSubsystem,
+        elevator: ElevatorSubsystem,
     ) {
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
@@ -99,6 +110,31 @@ object Controls {
                 AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
         )
+
+        // Elevator Commands Start
+        
+        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).onTrue(RaiseElevatorCommand(elevator))
+        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).onTrue(LowerElevatorCommand(elevator))
+
+        OPERATOR.leftTrigger().debounce(BUTTON_DEBOUNCE_TIME.`in`(Units.Seconds)).toggleOnTrue(
+          TeleopElevatorCommand(
+            elevator,
+            input = { OPERATOR.leftY },
+            inputCurve = MultiCurve(
+              listOf(
+                PiecewiseCurve(
+                  linkedMapOf(
+                    { input: Double -> abs(input) < ROTATION_DEADBAND } to NullCurve(), // Apply a deadband.
+                    { input: Double -> abs(input) > ROTATION_DEADBAND } to ELEVATOR_CURVE // Apply our actual curve.
+                  )
+                ),
+                LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+              )
+            )
+          )
+        )
+
+        // Elevator Commands Stop
 
         DRIVER.b().debounce(2.0).onTrue(
             InstantCommand({
