@@ -15,28 +15,6 @@ object PhysicalConstants {
      */
     val MOI: MomentOfInertia = Units.KilogramSquareMeters.of(6.883)
 
-    // <editor-fold desc="Maximum Constraints">
-    // todo: all constraints
-    /**
-     * The maximum [LinearVelocity] of the robot.
-     */
-    val MAX_SPEED: LinearVelocity = Units.MetersPerSecond.of(5.0)
-
-    /**
-     * The maximum [LinearAcceleration] of the robot.
-     */
-    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(8.0)
-
-    /**
-     * The maximum [AngularVelocity] of the robot.
-     */
-    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(180.0)
-
-    /**
-     * The maximum [AngularAcceleration] of the robot.
-     */
-    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.DegreesPerSecondPerSecond.of(360.0)
-
     /**
      * A measure of [Voltage] over [Time] the swerve module's drive motor can ramp at.
      */
@@ -49,8 +27,6 @@ object PhysicalConstants {
      */
     const val ANGLE_MOTOR_RAMP_RATE = 0.25
     // val ANGLE_MOTOR_RAMP_RATE: Measure<out PerUnit<VoltageUnit, TimeUnit>> = PerUnit.combine(Units.Volts, Units.Seconds).of(0.25)
-
-    // </editor-fold>
 
     /**
      * The type of [DCMotor] used for each swerve module's drive motor.
@@ -111,4 +87,39 @@ object PhysicalConstants {
      * The [Distance] of each swerve module's wheel diameter.
      */
     val WHEEL_DIAMETER: Distance = Units.Inches.of(4.0)
+
+    // <editor-fold desc="Maximum Constraints">
+    /**
+     * The maximum [LinearVelocity] of the robot.
+     */
+    // todo: should we calculate these values or see what they are in practice? (probably see)
+    val MAX_SPEED: LinearVelocity =
+        // (W/G) * (π*d)
+        //  where W = free speed (rev/s), G = gear ratio, d = wheel diameter (meters)
+        Units.MetersPerSecond.of(
+            (
+                Units.RadiansPerSecond
+                    .of(DRIVE_MOTOR_TYPE.freeSpeedRadPerSec)
+                    .`in`(Units.RevolutionsPerSecond)
+                    .div(DRIVE_GEAR_RATIO)
+            ) *
+                (Math.PI * WHEEL_DIAMETER.`in`(Units.Meters))
+        )
+
+    /**
+     * The maximum [LinearAcceleration] of the robot.
+     */
+    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(8.0)
+
+    /**
+     * The maximum [AngularVelocity] of the robot.
+     */
+    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(180.0)
+
+    /**
+     * The maximum [AngularAcceleration] of the robot.
+     */
+    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.DegreesPerSecondPerSecond.of(360.0)
+
+    // </editor-fold>
 }
