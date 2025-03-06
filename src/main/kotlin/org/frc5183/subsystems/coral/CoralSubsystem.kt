@@ -36,7 +36,7 @@ class CoralSubsystem(private val io: CoralIO) : Subsystem {
     }
 
     fun clearCoral() {
-        this.hasCoral = hasCoral
+        hasCoral = false
         visibleCoralBuffer = false
     }
 }
