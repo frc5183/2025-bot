@@ -49,7 +49,7 @@ object Controls {
     /**
      * The curve applied to the translation inputs, among other input filtering (deadband, range clamps, etc.)
      */
-    val TRANSLATION_CURVE = ExponentialCurve(50.0, 35.0)
+    val TRANSLATION_CURVE = ExponentialCurve(1.5, 3.0)
 
     /**
      * The curve applied to the rotation input, among other input filtering (deadband, range clamps, etc.)

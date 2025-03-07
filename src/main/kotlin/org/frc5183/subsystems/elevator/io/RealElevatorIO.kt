@@ -13,7 +13,7 @@ class RealElevatorIO(
         get() = Units.Rotations.of(motor.encoder.position)
 
     override val bottomLimitSwitchTriggered: Boolean
-        get() = bottomLimitSwitch.get()
+        get() = !bottomLimitSwitch.get()
 
     override fun updateInputs(
         inputs: ElevatorIO.ElevatorIOInputs,
@@ -21,7 +21,7 @@ class RealElevatorIO(
     ) {
         inputs.motorEncoder = motorEncoder.`in`(Units.Rotations)
         inputs.currentStage = currentStage
-        inputs.bottomLimitSwitchTriggered = bottomLimitSwitch.get()
+        inputs.bottomLimitSwitchTriggered = !bottomLimitSwitchTriggered
     }
 
     override fun runElevator(speed: Double) {
