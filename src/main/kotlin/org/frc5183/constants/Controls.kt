@@ -75,8 +75,8 @@ object Controls {
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
                 drive,
-                xInput = { DRIVER.leftX },
-                yInput = { DRIVER.leftY },
+                xInput = { DRIVER.leftY },
+                yInput = { DRIVER.leftX },
                 rotationInput = { DRIVER.rightX },
                 translationCurve =
                     MultiCurve(
@@ -102,7 +102,7 @@ object Controls {
                             LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
                         ),
                     ),
-                fieldRelative = true,
+                fieldRelative = false,
             )
 
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
