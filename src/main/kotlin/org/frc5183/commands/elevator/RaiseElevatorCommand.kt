@@ -18,9 +18,9 @@ class RaiseElevatorCommand(
             invalidStage = true
             return
         }
-        elevator.desiredStage = elevator.currentStage + 1
+        elevator.desiredStage += 1
 
-        elevator.raiseElevator()
+        elevator.raiseElevator(0.5)
     }
 
     override fun end(interrupted: Boolean) {

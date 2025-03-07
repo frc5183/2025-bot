@@ -8,16 +8,12 @@ import edu.wpi.first.wpilibj.DigitalInput
 class RealElevatorIO(
     private val motor: SparkMax,
     private val bottomLimitSwitch: DigitalInput,
-    private val topLimitSwitch: DigitalInput,
 ) : ElevatorIO {
     override val motorEncoder: Angle
         get() = Units.Rotations.of(motor.encoder.position)
 
     override val bottomLimitSwitchTriggered: Boolean
         get() = bottomLimitSwitch.get()
-
-    override val topLimitSwitchTriggered: Boolean
-        get() = topLimitSwitch.get()
 
     override fun updateInputs(
         inputs: ElevatorIO.ElevatorIOInputs,

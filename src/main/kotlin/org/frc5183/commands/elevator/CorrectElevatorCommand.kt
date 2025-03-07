@@ -14,7 +14,7 @@ class CorrectElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
     }
 
     override fun execute() {
-        elevator.raiseElevator()
+        elevator.raiseElevator(0.2)
     }
 
     override fun end(interrupted: Boolean) {
@@ -22,7 +22,7 @@ class CorrectElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
     }
 
     override fun isFinished(): Boolean {
-        return elevator.currentStage == elevator.desiredStage
+        return elevator.stageDrift < Config.ELEVATOR_MAX_ALLOWED_DRIFT
     }
 }
 

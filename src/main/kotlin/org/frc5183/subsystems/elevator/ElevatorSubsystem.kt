@@ -39,9 +39,8 @@ class ElevatorSubsystem(
             stopElevator()
             resetEncoder()
         }
-
-        if (io.topLimitSwitchTriggered) stopElevator()
     }
+
 
     /**
      * Runs the elevator at [speed]
@@ -51,12 +50,12 @@ class ElevatorSubsystem(
     /**
      * Runs the elevator motor up.
      */
-    fun raiseElevator() = runElevator(1.0)
+    fun raiseElevator(speed: Double) = runElevator(1.0 * speed)
 
     /**
      * Runs the elevator motor down.
      */
-    fun lowerElevator() = runElevator(-1.0)
+    fun lowerElevator(speed: Double) = runElevator(-1.0 * speed)
 
     /**
      * Stops the elevator motor.

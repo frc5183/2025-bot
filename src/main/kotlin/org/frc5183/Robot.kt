@@ -140,7 +140,6 @@ object Robot : LoggedRobot() {
               DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
             ),
             DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
-            DigitalInput(DeviceConstants.ELEVATOR_TOP_LIMIT_SWITCH_ID),
           )
         )
 
