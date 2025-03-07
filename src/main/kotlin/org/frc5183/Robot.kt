@@ -23,19 +23,24 @@ import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
+import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.DriveToPose2d
+import org.frc5183.commands.elevator.RaiseElevatorCommand
+import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
 import org.frc5183.math.auto.pathfinding.LocalADStarAK
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
 import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.vision.io.RealVisionIO
+import org.frc5183.subsystems.elevator.io.RealElevatorIO
 import org.frc5183.subsystems.vision.io.SimulatedVisionIO
 import org.littletonrobotics.junction.LogFileUtil
 import org.littletonrobotics.junction.LoggedRobot
@@ -60,6 +65,7 @@ import org.frc5183.subsystems.coral.io.RealCoralIO
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
+    private val elevator: ElevatorSubsystem
     private val coralSubsystem: CoralSubsystem
 
     val simulation: Boolean
@@ -128,17 +134,30 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
+        elevator = ElevatorSubsystem(
+          RealElevatorIO(
+            SparkMax(
+              DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
+            ),
+            DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
+            DigitalInput(DeviceConstants.ELEVATOR_TOP_LIMIT_SWITCH_ID),
+          )
+        )
+
         coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
 
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
+            elevator,
             coralSubsystem,
         )
 
         NamedCommands.registerCommands(
           mapOf(
             "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+            "Raise Elevator" to RaiseElevatorCommand(elevator),
+            "Lower Elevator" to LowerElevatorCommand(elevator),
           )
         )
 
@@ -188,7 +207,7 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision, coralSubsystem) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, elevator, coralSubsystem) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
