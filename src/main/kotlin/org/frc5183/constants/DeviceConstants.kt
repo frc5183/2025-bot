@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.I2C
  * Device IDs connected to the robot.
  */
 object DeviceConstants {
+    const val CLIMBER_CAN: Int = 3
+    val CLIMBER_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless
+
     const val ELEVATOR_MOTOR_ID: Int = 4
     val ELEVATOR_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless
     const val ELEVATOR_BOTTOM_LIMIT_SWITCH_ID: Int = 1

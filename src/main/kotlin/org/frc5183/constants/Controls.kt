@@ -5,19 +5,22 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import org.frc5183.commands.coral.IntakeCoralCommand
-import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.elevator.DriveElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.commands.elevator.RaiseElevatorCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
+import org.frc5183.commands.coral.IntakeCoralCommand
+import org.frc5183.commands.coral.ShootCoralCommand
+import org.frc5183.commands.climber.PullClimberCommand
+import org.frc5183.commands.climber.DriveClimberCommand
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
+import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.target.FieldTarget
 import kotlin.math.abs
 import kotlin.time.Duration
@@ -54,6 +57,11 @@ object Controls {
     val ROTATION_CURVE = ExponentialCurve(50.0)
 
     /**
+     * The curve applied to the climb input, among other input filtering (deadband, range clamps, etc.)
+     */
+    val CLIMB_CURVE = LinearCurve(1.0, 0.0)
+    
+    /**
      * The curve applied to manual elevator control with joystick.
      */
     val ELEVATOR_CURVE = LinearCurve(1.0, 0.0)
@@ -68,6 +76,7 @@ object Controls {
     fun teleopInit(
         drive: SwerveDriveSubsystem,
         vision: VisionSubsystem,
+        climber: ClimberSubsystem,
         elevator: ElevatorSubsystem,
         coralSubsystem: CoralSubsystem,
     ) {
@@ -118,16 +127,31 @@ object Controls {
         // Operator Commands Start
 
         // Coral Commands Start
-        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(ShootCoralCommand(coralSubsystem))
 
         // Reset Coral State
-        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
-            InstantCommand({
-                coralSubsystem.clearCoral()
-            }),
-        )
+        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(InstantCommand({ coralSubsystem.clearCoral() }))
+
         // Coral Commands End
+        
+        // Climber Command Start
+        OPERATOR.rightTrigger().whileTrue(PullClimberCommand(climber))
+        OPERATOR.rightStick().toggleOnTrue(
+          DriveClimberCommand(
+            climber, 
+            input = { OPERATOR.rightY }, 
+            inputCurve = MultiCurve(listOf(
+              PiecewiseCurve(
+                linkedMapOf(
+                  { input: Double -> abs(input) < TRANSLATION_DEADBAND } to NullCurve(), // Apply a deadband
+                  { input: Double -> abs(input) > TRANSLATION_DEADBAND } to CLIMB_CURVE, // Apply our actual curve.
+                ),
+              ),
+              LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+            ))
+          )
+        )
 
         // Elevator Commands Start
 
