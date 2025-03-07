@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
-import org.frc5183.commands.coral.IntakeCoralCommand
-import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.elevator.DriveElevatorCommand
@@ -22,7 +20,6 @@ import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
-import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.target.FieldTarget
 import kotlin.math.abs
