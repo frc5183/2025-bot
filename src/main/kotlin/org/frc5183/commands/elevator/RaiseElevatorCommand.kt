@@ -8,7 +8,6 @@ class RaiseElevatorCommand(
     val elevator: ElevatorSubsystem,
 ) : Command() {
     private var invalidStage: Boolean = false
-    private var desiredStage: Int = -1 // lateinit primitives are annoying.
 
     init {
         addRequirements(elevator)
@@ -19,12 +18,15 @@ class RaiseElevatorCommand(
             invalidStage = true
             return
         }
-        desiredStage = elevator.currentStage + 1
-    }
+        elevator.desiredStage = elevator.currentStage + 1
 
-    override fun execute() {
         elevator.raiseElevator()
     }
 
-    override fun isFinished() = desiredStage <= elevator.currentStage || invalidStage
+    override fun end(interrupted: Boolean) {
+        elevator.stopElevator()
+    }
+
+
+    override fun isFinished() = elevator.desiredStage <= elevator.currentStage || invalidStage
 }

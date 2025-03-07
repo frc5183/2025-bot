@@ -17,6 +17,8 @@ object Config {
         Units.Degrees.of(20.0), // Stage 2
         Units.Degrees.of(30.0), // Stage 3
     )
+    val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
+
     val CORAL_SHOOT_TIME: Duration = 1.seconds
     const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo
     const val CORAL_PROXIMITY_THRESHOLD: Int = 10 // todo

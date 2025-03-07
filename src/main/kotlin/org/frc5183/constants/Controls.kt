@@ -13,6 +13,8 @@ import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.elevator.DriveElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.commands.elevator.RaiseElevatorCommand
+import org.frc5183.commands.elevator.CorrectElevatorCommand
+import org.frc5183.commands.elevator.HoldElevatorCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
 import org.frc5183.math.curve.*
 import org.frc5183.subsystems.coral.CoralSubsystem
@@ -120,7 +122,9 @@ object Controls {
 
         // Coral Commands Start
         OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(IntakeCoralCommand(coralSubsystem))
-        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(ShootCoralCommand(coralSubsystem))
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
+          CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))) // First correct the elevator, then shoot the coral while holding the elevator.
+        )
 
         // Reset Coral State
         OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(

@@ -1,6 +1,7 @@
 package org.frc5183.subsystems.elevator
 
 import edu.wpi.first.wpilibj2.command.Subsystem
+import edu.wpi.first.units.measure.Angle
 import org.frc5183.constants.Config
 import org.frc5183.subsystems.elevator.io.ElevatorIO
 import org.littletonrobotics.junction.Logger
@@ -11,9 +12,22 @@ class ElevatorSubsystem(
     private val ioInputs: ElevatorIO.ElevatorIOInputs = ElevatorIO.ElevatorIOInputs()
 
     /**
-     * The current stage the elevator is on.
+     * The desired stage the elevator should be on.
+     */
+    var desiredStage: Int = 0
+
+    /**
+     * The current stage the elevator is on based on the motor's encoder.
      */
     var currentStage: Int = 0
+        private set
+
+    /**
+     * The absolute difference between the current encoder value and the current stage's
+     * desired encoder value.
+     */
+    val stageDrift: Angle
+        get() = Config.ELEVATOR_STAGES[desiredStage] - io.motorEncoder
 
     override fun periodic() {
         io.updateInputs(ioInputs, currentStage)
