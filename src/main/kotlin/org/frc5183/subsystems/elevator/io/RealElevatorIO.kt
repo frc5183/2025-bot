@@ -10,7 +10,7 @@ class RealElevatorIO(
     private val bottomLimitSwitch: DigitalInput,
 ) : ElevatorIO {
     override val motorEncoder: Angle
-        get() = Units.Rotations.of(motor.encoder.position)
+        get() = Units.Rotations.of(-1.0 * motor.encoder.position)
 
     override val bottomLimitSwitchTriggered: Boolean
         get() = !bottomLimitSwitch.get()
@@ -19,7 +19,7 @@ class RealElevatorIO(
         inputs: ElevatorIO.ElevatorIOInputs,
         currentStage: Int,
     ) {
-        inputs.motorEncoder = motorEncoder.`in`(Units.Rotations)
+        inputs.motorEncoder = motorEncoder.`in`(Units.Rotations) * -1.0
         inputs.currentStage = currentStage
         inputs.bottomLimitSwitchTriggered = !bottomLimitSwitchTriggered
     }

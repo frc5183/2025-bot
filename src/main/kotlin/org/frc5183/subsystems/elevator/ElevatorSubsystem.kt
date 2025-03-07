@@ -38,6 +38,10 @@ class ElevatorSubsystem(
         Logger.processInputs("Elevator", ioInputs)
 
         currentStage = Config.ELEVATOR_STAGES.indexOfFirst { it > io.motorEncoder }
+
+        if (io.bottomLimitSwitchTriggered) currentStage = 0
+
+        println(io.motorEncoder)
     }
 
 
