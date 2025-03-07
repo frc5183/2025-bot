@@ -1,5 +1,6 @@
 package org.frc5183.constants
 
+import edu.wpi.first.math.filter.Debouncer
 import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
@@ -107,9 +108,9 @@ object Controls {
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
 
         // D-PAD Up
-        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
+        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
 
-        DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
+        DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
@@ -118,11 +119,11 @@ object Controls {
         // Operator Commands Start
 
         // Coral Commands Start
-        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(IntakeCoralCommand(coralSubsystem))
-        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(ShootCoralCommand(coralSubsystem))
+        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(ShootCoralCommand(coralSubsystem))
 
         // Reset Coral State
-        OPERATOR.rightTrigger().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
+        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 coralSubsystem.clearCoral()
             }),
@@ -131,10 +132,10 @@ object Controls {
 
         // Elevator Commands Start
 
-        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(RaiseElevatorCommand(elevator))
-        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(LowerElevatorCommand(elevator))
+        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(RaiseElevatorCommand(elevator))
+        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(LowerElevatorCommand(elevator))
 
-        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).toggleOnTrue(
+        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).toggleOnTrue(
             DriveElevatorCommand(
                 elevator,
                 input = { OPERATOR.leftY },
@@ -157,14 +158,14 @@ object Controls {
 
         // Operator Commands End
 
-        DRIVER.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
+        DRIVER.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 println("Driver cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()
             }),
         )
 
-        OPERATOR.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS)).onTrue(
+        OPERATOR.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 println("Operator cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()
