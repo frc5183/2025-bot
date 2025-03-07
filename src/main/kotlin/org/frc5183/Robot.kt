@@ -208,9 +208,6 @@ object Robot : LoggedRobot() {
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
         Controls.teleopInit(drive, vision, elevator, coralSubsystem) // Register all teleop controls.
-
-        // todo debug sets the pose2d to into the field in sim
-        drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
     }
 
     /** This method is called periodically during operator control.  */
