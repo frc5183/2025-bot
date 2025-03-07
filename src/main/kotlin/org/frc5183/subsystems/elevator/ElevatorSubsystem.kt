@@ -2,6 +2,7 @@ package org.frc5183.subsystems.elevator
 
 import edu.wpi.first.wpilibj2.command.Subsystem
 import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.wpilibj.Timer
 import org.frc5183.constants.Config
 import org.frc5183.subsystems.elevator.io.ElevatorIO
 import org.littletonrobotics.junction.Logger
@@ -29,16 +30,14 @@ class ElevatorSubsystem(
     val stageDrift: Angle
         get() = Config.ELEVATOR_STAGES[desiredStage] - io.motorEncoder
 
+    val bottomLimitSwitch: Boolean
+        get() = io.bottomLimitSwitchTriggered
+
     override fun periodic() {
         io.updateInputs(ioInputs, currentStage)
         Logger.processInputs("Elevator", ioInputs)
 
         currentStage = Config.ELEVATOR_STAGES.indexOfFirst { it > io.motorEncoder }
-
-        if (io.bottomLimitSwitchTriggered) {
-            stopElevator()
-            resetEncoder()
-        }
     }
 
 
@@ -50,12 +49,12 @@ class ElevatorSubsystem(
     /**
      * Runs the elevator motor up.
      */
-    fun raiseElevator(speed: Double) = runElevator(1.0 * speed)
+    fun raiseElevator(speed: Double) = runElevator(-1.0 * speed)
 
     /**
      * Runs the elevator motor down.
      */
-    fun lowerElevator(speed: Double) = runElevator(-1.0 * speed)
+    fun lowerElevator(speed: Double) = runElevator(1.0 * speed)
 
     /**
      * Stops the elevator motor.

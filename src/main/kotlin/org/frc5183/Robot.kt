@@ -19,12 +19,14 @@ import edu.wpi.first.math.geometry.Rotation2d
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.units.Units
+import edu.wpi.first.util.sendable.Sendable
 import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.I2C
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.coral.ShootCoralCommand
@@ -77,7 +79,7 @@ object Robot : LoggedRobot() {
      */
     private val brakeTimer = Timer()
 
-    private val autoChooser: LoggedDashboardChooser<Command>
+    private val autoChooser: SendableChooser<Command>
 
     init
     {
@@ -146,7 +148,7 @@ object Robot : LoggedRobot() {
         coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
 
         CommandScheduler.getInstance().registerSubsystem(
-            vision,
+            //vision,
             drive,
             elevator,
             coralSubsystem,
@@ -160,19 +162,21 @@ object Robot : LoggedRobot() {
           )
         )
 
-        autoChooser = LoggedDashboardChooser("Selected Auto Routine", AutoBuilder.buildAutoChooser())
-        SmartDashboard.putData("Auto choices", autoChooser.sendableChooser)
+        autoChooser = AutoBuilder.buildAutoChooser()
+        SmartDashboard.putData("Auto choices", autoChooser)
 
         // todo: debug
         CommandScheduler.getInstance().onCommandInitialize {
             println("Command initialized: ${it.name}")
         }
 
+        /**
         CommandScheduler.getInstance().onCommandExecute {
             if (it.name != "TeleopDriveCommand") {
                 println("Command executed: ${it.name}")
             }
         }
+        */
 
         CommandScheduler.getInstance().onCommandFinish {
             println("Command finished: ${it.name}")
@@ -196,7 +200,7 @@ object Robot : LoggedRobot() {
 
     override fun autonomousInit() {
         CommandScheduler.getInstance().cancelAll()
-        autoChooser.get().schedule()
+        autoChooser.selected.schedule()
     }
 
     override fun autonomousPeriodic() {

@@ -49,12 +49,12 @@ object Controls {
     /**
      * The curve applied to the translation inputs, among other input filtering (deadband, range clamps, etc.)
      */
-    val TRANSLATION_CURVE = LinearCurve(1.0, 0.0)
+    val TRANSLATION_CURVE = ExponentialCurve(50.0, 35.0)
 
     /**
      * The curve applied to the rotation input, among other input filtering (deadband, range clamps, etc.)
      */
-    val ROTATION_CURVE = ExponentialCurve(50.0)
+    val ROTATION_CURVE = ExponentialCurve(50.0, 35.0)
 
     /**
      * The curve applied to manual elevator control with joystick.
@@ -79,7 +79,7 @@ object Controls {
                 drive,
                 xInput = { DRIVER.leftY },
                 yInput = { DRIVER.leftX },
-                rotationInput = { DRIVER.rightX },
+                rotationInput = { -DRIVER.rightX },
                 translationCurve =
                     MultiCurve(
                         listOf(
@@ -122,9 +122,13 @@ object Controls {
 
         // Coral Commands Start
         OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(ShootCoralCommand(coralSubsystem))
+        /*
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
           CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))) // First correct the elevator, then shoot the coral while holding the elevator.
         )
+
+         */
 
         // Reset Coral State
         OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
