@@ -12,6 +12,8 @@ class ElevatorSubsystem(
 ) : Subsystem {
     private val ioInputs: ElevatorIO.ElevatorIOInputs = ElevatorIO.ElevatorIOInputs()
 
+    //private val encoderZero: Angle = io.motorEncoder
+
     /**
      * The desired stage the elevator should be on.
      */
@@ -41,7 +43,7 @@ class ElevatorSubsystem(
 
         if (io.bottomLimitSwitchTriggered) currentStage = 0
 
-        println(io.motorEncoder)
+        println("Stage $currentStage, Encoder ${io.motorEncoder}")
     }
 
 

@@ -12,10 +12,11 @@ import kotlin.time.Duration.Companion.seconds
  */
 object Config {
     val ELEVATOR_STAGES: List<Angle> = listOf(
-        Units.Degrees.of(0.0), // Stage 0
-        Units.Degrees.of(10.0), // Stage 1
-        Units.Degrees.of(20.0), // Stage 2
-        Units.Degrees.of(30.0), // Stage 3
+        Units.Radians.of(0.0),
+        Units.Radians.of(1.483),
+        Units.Radians.of(2.421),
+        Units.Radians.of(5.050),
+        Units.Radians.of(9.258)
     )
     val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
 

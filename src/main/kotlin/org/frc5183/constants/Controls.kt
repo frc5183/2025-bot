@@ -104,7 +104,7 @@ object Controls {
                             LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
                         ),
                     ),
-                fieldRelative = false,
+                fieldRelative = true,
             )
 
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
