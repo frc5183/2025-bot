@@ -9,7 +9,7 @@ class IntakeCoralCommand(private val coralSubsystem: CoralSubsystem) : Command()
     }
 
     override fun initialize() {
-        coralSubsystem.runMotor()
+        coralSubsystem.runMotor(0.5)
     }
 
     override fun end(interrupted: Boolean) {

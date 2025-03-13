@@ -1,6 +1,7 @@
 package org.frc5183.constants
 
 import edu.wpi.first.math.filter.Debouncer
+import edu.wpi.first.wpilibj.DriverStation
 import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
@@ -25,6 +26,7 @@ import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.target.FieldTarget
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -82,12 +84,13 @@ object Controls {
         elevator: ElevatorSubsystem,
         coralSubsystem: CoralSubsystem,
     ) {
+        val alliance = DriverStation.getAlliance().getOrNull() ?: DriverStation.Alliance.Red
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
                 drive,
-                xInput = { DRIVER.leftY },
-                yInput = { DRIVER.leftX },
-                rotationInput = { -DRIVER.rightX },
+                xInput = { if (alliance == DriverStation.Alliance.Red) DRIVER.leftY else -DRIVER.leftY },
+                yInput = { if (alliance == DriverStation.Alliance.Red) DRIVER.leftX else -DRIVER.leftX },
+                rotationInput = { if (alliance == DriverStation.Alliance.Red) -DRIVER.rightX else DRIVER.rightX },
                 translationCurve =
                     MultiCurve(
                         listOf(

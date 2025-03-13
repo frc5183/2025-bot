@@ -16,7 +16,7 @@ class ShootCoralCommand(private val coralSubsystem: CoralSubsystem) : Command() 
     override fun initialize() {
         timer.reset()
         timer.start()
-        coralSubsystem.runMotor()
+        coralSubsystem.runMotor(1.0)
     }
 
     override fun end(interrupted: Boolean) {

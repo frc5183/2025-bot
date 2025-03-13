@@ -16,6 +16,10 @@ class RealElevatorIO(
     override val bottomLimitSwitchTriggered: Boolean
         get() = !bottomLimitSwitch.get()
 
+    init {
+        motor.encoder.position = 0.0
+    }
+
     override fun updateInputs(
         inputs: ElevatorIO.ElevatorIOInputs,
         currentStage: Int,

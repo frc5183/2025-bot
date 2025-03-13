@@ -12,11 +12,11 @@ import kotlin.time.Duration.Companion.seconds
  */
 object Config {
     val ELEVATOR_STAGES: List<Angle> = listOf(
-        Units.Radians.of(0.0),
-        Units.Radians.of(1.483),
-        Units.Radians.of(2.421),
-        Units.Radians.of(5.050),
-        Units.Radians.of(9.258)
+        Units.Rotations.of(0.0),
+        Units.Rotations.of(1.483),
+        Units.Rotations.of(2.421),
+        Units.Rotations.of(5.050),
+        Units.Rotations.of(9.258)
     )
     val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
     const val ELEVATOR_MOTOR_INVERTED: Boolean = true
@@ -25,7 +25,7 @@ object Config {
 
     val CORAL_SHOOT_TIME: Duration = 1.seconds
     const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo
-    const val CORAL_PROXIMITY_THRESHOLD: Int = 10 // todo
+    const val CORAL_PROXIMITY_THRESHOLD: Int = 200
 
     /**
      * The amount of time to continue running the intake motor for after
