@@ -3,35 +3,37 @@ package org.frc5183
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
 import com.pathplanner.lib.commands.PathPlannerAuto
-import com.pathplanner.lib.path.GoalEndState
-import com.pathplanner.lib.path.PathConstraints
-import com.pathplanner.lib.path.PathPlannerPath
-import com.pathplanner.lib.pathfinding.Pathfinder
 import com.pathplanner.lib.pathfinding.Pathfinding
+import com.revrobotics.spark.SparkMax
+import com.revrobotics.ColorSensorV3
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
-import edu.wpi.first.math.Pair
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
+import edu.wpi.first.wpilibj.DigitalInput
+import edu.wpi.first.wpilibj.I2C
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.DriveToPose2d
+import org.frc5183.commands.elevator.RaiseElevatorCommand
+import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
-import org.frc5183.math.auto.pathfinding.LocalADStarAK
+import org.frc5183.subsystems.climber.ClimberSubsystem
+import org.frc5183.subsystems.climber.io.RealClimberIO
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
 import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.vision.io.RealVisionIO
+import org.frc5183.subsystems.elevator.io.RealElevatorIO
 import org.frc5183.subsystems.vision.io.SimulatedVisionIO
 import org.littletonrobotics.junction.LogFileUtil
 import org.littletonrobotics.junction.LoggedRobot
@@ -40,6 +42,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser
 import org.littletonrobotics.junction.networktables.NT4Publisher
 import org.littletonrobotics.junction.wpilog.WPILOGReader
 import org.littletonrobotics.junction.wpilog.WPILOGWriter
+import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.coral.io.RealCoralIO
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -54,6 +58,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter
 object Robot : LoggedRobot() {
     private val vision: VisionSubsystem
     private val drive: SwerveDriveSubsystem
+    private val climber: ClimberSubsystem
+    private val elevator: ElevatorSubsystem
+    private val coralSubsystem: CoralSubsystem
 
     val simulation: Boolean
         get() = isSimulation()
@@ -101,7 +108,6 @@ object Robot : LoggedRobot() {
             }
         }
 
-
         if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
@@ -121,9 +127,34 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
+        climber = ClimberSubsystem(RealClimberIO(SparkMax(DeviceConstants.CLIMBER_CAN, DeviceConstants.CLIMBER_MOTOR_TYPE))) // todo: simulate this io
+
+        elevator = ElevatorSubsystem(
+          RealElevatorIO(
+            SparkMax(
+              DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
+            ),
+            DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
+            DigitalInput(DeviceConstants.ELEVATOR_TOP_LIMIT_SWITCH_ID),
+          )
+        )
+
+        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
+
         CommandScheduler.getInstance().registerSubsystem(
             vision,
             drive,
+            climber,
+            elevator,
+            coralSubsystem,
+        )
+
+        NamedCommands.registerCommands(
+          mapOf(
+            "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+            "Raise Elevator" to RaiseElevatorCommand(elevator),
+            "Lower Elevator" to LowerElevatorCommand(elevator),
+          )
         )
 
         autoChooser = LoggedDashboardChooser("Selected Auto Routine", AutoBuilder.buildAutoChooser())
@@ -172,7 +203,7 @@ object Robot : LoggedRobot() {
     /** This method is called once when teleop is enabled.  */
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
-        Controls.teleopInit(drive, vision) // Register all teleop controls.
+        Controls.teleopInit(drive, vision, climber, elevator, coralSubsystem) // Register all teleop controls.
 
         // todo debug sets the pose2d to into the field in sim
         drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
