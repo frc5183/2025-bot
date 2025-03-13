@@ -41,6 +41,7 @@ deploy {
             artifacts.create("frcJava", FRCJavaArtifact::class.java) {
                 jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError")
                 jvmArgs.add("-XX:HeapDumpPath=\"/U/heap/dump.hprof\"")
+                jvmArgs.add("-Xmx156m") // todo: the jvm seems to be overallocating until we run out of physical memory, even if what we actually need is nowhere near what its allocating.
             }
             artifacts.create("frcStaticFileDeploy", FileTreeArtifact::class.java) {
                 files = project.fileTree("deploy")
