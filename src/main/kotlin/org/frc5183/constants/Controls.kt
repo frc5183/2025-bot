@@ -142,7 +142,7 @@ object Controls {
         OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(RaiseElevatorCommand(elevator))
         OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(LowerElevatorCommand(elevator))
 
-        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).toggleOnTrue(
+        val elevatorDriveCommand = 
             DriveElevatorCommand(
                 elevator,
                 input = { OPERATOR.leftY },
@@ -158,8 +158,9 @@ object Controls {
                             LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
                         ),
                     ),
-            ),
-        )
+            )
+
+        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).toggleOnTrue(elevatorDriveCommand)
 
         // Elevator Commands Stop
 
