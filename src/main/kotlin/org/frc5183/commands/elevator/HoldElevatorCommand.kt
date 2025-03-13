@@ -15,7 +15,7 @@ class HoldElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
 
     override fun execute() {
         if (elevator.stageDrift > Config.ELEVATOR_MAX_ALLOWED_DRIFT) {
-            elevator.raiseElevator(0.2)
+            elevator.raiseElevator(Config.ELEVATOR_HOLD_SPEED)
         } else {
             elevator.stopElevator()
         }

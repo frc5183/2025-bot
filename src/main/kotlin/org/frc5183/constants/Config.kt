@@ -20,6 +20,8 @@ object Config {
     )
     val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
     const val ELEVATOR_MOTOR_INVERTED: Boolean = true
+    const val ELEVATOR_MOVEMENT_SPEED = 0.5
+    const val ELEVATOR_HOLD_SPEED = 0.2
  
     val CORAL_SHOOT_TIME: Duration = 1.seconds
     const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo

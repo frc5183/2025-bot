@@ -14,7 +14,7 @@ class CorrectElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
     }
 
     override fun execute() {
-        elevator.raiseElevator(0.2)
+        elevator.raiseElevator(Config.ELEVATOR_HOLD_SPEED)
     }
 
     override fun end(interrupted: Boolean) {

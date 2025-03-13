@@ -2,6 +2,7 @@ package org.frc5183.commands.elevator
 
 import edu.wpi.first.wpilibj2.command.Command
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.constants.Config
 
 class LowerElevatorCommand(
     val elevator: ElevatorSubsystem,
@@ -19,7 +20,7 @@ class LowerElevatorCommand(
         }
         elevator.desiredStage -= 1
 
-        elevator.lowerElevator(0.5)
+        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED)
     }
 
 

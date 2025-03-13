@@ -20,7 +20,7 @@ class RaiseElevatorCommand(
         }
         elevator.desiredStage += 1
 
-        elevator.raiseElevator(0.5)
+        elevator.raiseElevator(Config.ELEVATOR_MOVEMENT_SPEED)
     }
 
     override fun end(interrupted: Boolean) {
