@@ -59,7 +59,7 @@ class MultiCurveTest {
     @Test
     fun `test multi curve with complex chain`() {
         val curve1 = LinearCurve(2.0, 0.0)               // y = 2x
-        val curve2 = ExponentialCurve(1.0)               // Exponential transformation
+        val curve2 = ExponentialCurve(1.0, 1.0)               // Exponential transformation
         val curve3 = LimitedCurve(-3.0, 3.0)             // Limit to [-3, 3]
         val multiCurve = MultiCurve(listOf(curve1, curve2, curve3))
 
