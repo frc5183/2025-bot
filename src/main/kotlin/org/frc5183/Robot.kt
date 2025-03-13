@@ -49,7 +49,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader
 import org.littletonrobotics.junction.wpilog.WPILOGWriter
 import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.subsystems.coral.io.RealCoralIO
-import kotlin.time.DurationUnit
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -76,11 +75,6 @@ object Robot : LoggedRobot() {
      * we can disable brake mode after a little bit of time.
      */
     private val brakeTimer = Timer()
-
-    /**
-     * A timer used to manually trigger the GC in hopes of clearing memory.
-     */
-    private val gcTimer = Timer()
 
     private val autoChooser: SendableChooser<Command>
 
@@ -191,15 +185,9 @@ object Robot : LoggedRobot() {
             println("Command interrupted: ${it.name}")
         }
         // end todo
-
-        gcTimer.reset()
-        gcTimer.start()
     }
 
     override fun robotPeriodic() {
-        if (gcTimer.advanceIfElapsed(Config.GC_TIME.toDouble(DurationUnit.SECONDS)))
-          System.gc()
-
         // Wrap the command scheduler in a high priority thread.
         //  (thanks AdvantageKit template)
         Threads.setCurrentThreadPriority(true, 99)

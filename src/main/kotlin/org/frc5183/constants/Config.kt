@@ -22,7 +22,7 @@ object Config {
     const val ELEVATOR_MOTOR_INVERTED: Boolean = true
     const val ELEVATOR_MOVEMENT_SPEED = 0.5
     const val ELEVATOR_HOLD_SPEED = 0.2
- 
+
     val CORAL_SHOOT_TIME: Duration = 1.seconds
     const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo
     const val CORAL_PROXIMITY_THRESHOLD: Int = 10 // todo
@@ -32,11 +32,7 @@ object Config {
      * the coral has been detected.
      */
     val CORAL_INTAKE_TIME: Duration = 1.seconds
-
     const val VISION_POSE_ESTIMATION = false
     val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded) // https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf
-    
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
-
-    val GC_TIME: Duration = 5.seconds
 }
