@@ -180,12 +180,4 @@ object Controls {
             }),
         )
     }
-
-    /**
-     * A function to be called during teleop periodic.
-     * Mainly for polling the [CONTROLS_EVENT_LOOP].
-     */
-    fun teleopPeriodic() {
-        CONTROLS_EVENT_LOOP.poll()
-    }
 }

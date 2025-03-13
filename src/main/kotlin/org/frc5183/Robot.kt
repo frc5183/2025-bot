@@ -215,7 +215,6 @@ object Robot : LoggedRobot() {
 
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
-        Controls.teleopPeriodic()
     }
 
     /** This method is called once when the robot is disabled.  */
