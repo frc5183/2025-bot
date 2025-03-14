@@ -114,7 +114,7 @@ object PhysicalConstants {
     /**
      * The maximum [AngularVelocity] of the robot.
      */
-    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(180.0)
+    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(360.0)
 
     /**
      * The maximum [AngularAcceleration] of the robot.

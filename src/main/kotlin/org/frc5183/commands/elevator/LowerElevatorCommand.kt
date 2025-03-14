@@ -2,12 +2,12 @@ package org.frc5183.commands.elevator
 
 import edu.wpi.first.wpilibj2.command.Command
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.constants.Config
 
 class LowerElevatorCommand(
     val elevator: ElevatorSubsystem,
 ) : Command() {
     private var invalidStage: Boolean = false
-    private var desiredStage: Int = -1 // lateinit primitives are annoying.
 
     init {
         addRequirements(elevator)
@@ -18,12 +18,15 @@ class LowerElevatorCommand(
             invalidStage = true
             return
         }
-        desiredStage = elevator.currentStage - 1
+        elevator.desiredStage -= 1
+
+        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED)
     }
 
-    override fun execute() {
-        elevator.lowerElevator()
+
+    override fun end(interrupted: Boolean) {
+        elevator.stopElevator()
     }
 
-    override fun isFinished() = elevator.currentStage <= desiredStage || invalidStage
+    override fun isFinished() = elevator.currentStage <= elevator.desiredStage || invalidStage
 }

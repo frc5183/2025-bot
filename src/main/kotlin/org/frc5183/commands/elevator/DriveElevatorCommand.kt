@@ -14,7 +14,13 @@ class DriveElevatorCommand(
     }
 
     override fun execute() {
-        elevator.runElevator(inputCurve(input()))
+        val speed = inputCurve(input())
+
+        if (speed > 0 && elevator.bottomLimitSwitch) {
+            elevator.stopElevator()
+            return
+        }
+        elevator.runElevator(speed)
     }
 
     override fun isFinished() = false

@@ -11,12 +11,17 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Rotation2d
+import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.kinematics.ChassisSpeeds
+import edu.wpi.first.units.Units
+import edu.wpi.first.util.sendable.Sendable
 import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
 import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.I2C
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.coral.ShootCoralCommand
@@ -71,7 +76,7 @@ object Robot : LoggedRobot() {
      */
     private val brakeTimer = Timer()
 
-    private val autoChooser: LoggedDashboardChooser<Command>
+    private val autoChooser: SendableChooser<Command>
 
     init
     {
@@ -108,7 +113,8 @@ object Robot : LoggedRobot() {
             }
         }
 
-        if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
+        //if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
+        Logger.start()
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.
@@ -135,14 +141,13 @@ object Robot : LoggedRobot() {
               DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
             ),
             DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
-            DigitalInput(DeviceConstants.ELEVATOR_TOP_LIMIT_SWITCH_ID),
           )
         )
 
-        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)))
+        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)), elevator)
 
         CommandScheduler.getInstance().registerSubsystem(
-            vision,
+            //vision,
             drive,
             climber,
             elevator,
@@ -157,19 +162,21 @@ object Robot : LoggedRobot() {
           )
         )
 
-        autoChooser = LoggedDashboardChooser("Selected Auto Routine", AutoBuilder.buildAutoChooser())
-        SmartDashboard.putData("Auto choices", autoChooser.sendableChooser)
+        autoChooser = AutoBuilder.buildAutoChooser()
+        SmartDashboard.putData("Auto choices", autoChooser)
 
         // todo: debug
         CommandScheduler.getInstance().onCommandInitialize {
             println("Command initialized: ${it.name}")
         }
 
+        /**
         CommandScheduler.getInstance().onCommandExecute {
             if (it.name != "TeleopDriveCommand") {
                 println("Command executed: ${it.name}")
             }
         }
+        */
 
         CommandScheduler.getInstance().onCommandFinish {
             println("Command finished: ${it.name}")
@@ -193,7 +200,7 @@ object Robot : LoggedRobot() {
 
     override fun autonomousInit() {
         CommandScheduler.getInstance().cancelAll()
-        autoChooser.get().schedule()
+        autoChooser.selected.schedule()
     }
 
     override fun autonomousPeriodic() {
@@ -204,14 +211,10 @@ object Robot : LoggedRobot() {
     override fun teleopInit() {
         CommandScheduler.getInstance().cancelAll()
         Controls.teleopInit(drive, vision, climber, elevator, coralSubsystem) // Register all teleop controls.
-
-        // todo debug sets the pose2d to into the field in sim
-        drive.resetPose(Pose2d(3.0, 2.0, Rotation2d(0.0, 0.0)))
     }
 
     /** This method is called periodically during operator control.  */
     override fun teleopPeriodic() {
-        Controls.teleopPeriodic()
     }
 
     /** This method is called once when the robot is disabled.  */

@@ -3,8 +3,10 @@ package org.frc5183.subsystems.coral
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Subsystem
 import org.frc5183.subsystems.coral.io.CoralIO
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.littletonrobotics.junction.Logger
 
-class CoralSubsystem(private val io: CoralIO) : Subsystem {
+class CoralSubsystem(private val io: CoralIO, private val elevator: ElevatorSubsystem) : Subsystem {
     private val ioInputs = CoralIO.CoralIOInputs()
 
     var hasCoral: Boolean = false
@@ -17,9 +19,11 @@ class CoralSubsystem(private val io: CoralIO) : Subsystem {
 
     override fun periodic() {
       io.updateInputs(ioInputs, hasCoral)
-        SmartDashboard.putBoolean("Has Coral", hasCoral)
-        SmartDashboard.putBoolean("Sees Coral", seesCoral)
+      SmartDashboard.putBoolean("Has Coral", hasCoral)
+      SmartDashboard.putBoolean("Sees Coral", seesCoral)
+      Logger.processInputs("Coral", ioInputs)
 
+      if (!elevator.bottomLimitSwitch) return // Ignore any coral stuff when moving elevator.
       if (seesCoral && !visibleCoralBuffer) visibleCoralBuffer = true
       if (!seesCoral && visibleCoralBuffer) {
         hasCoral = true
@@ -27,8 +31,8 @@ class CoralSubsystem(private val io: CoralIO) : Subsystem {
       }
     }
 
-    fun runMotor() {
-        io.runMotor()
+    fun runMotor(speed: Double) {
+        io.runMotor(speed)
     }
 
     fun stopMotor() {
