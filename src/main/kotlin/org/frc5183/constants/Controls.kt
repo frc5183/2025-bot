@@ -84,13 +84,12 @@ object Controls {
         elevator: ElevatorSubsystem,
         coralSubsystem: CoralSubsystem,
     ) {
-        val alliance = DriverStation.getAlliance().getOrNull() ?: DriverStation.Alliance.Red
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
                 drive,
-                xInput = { if (alliance == DriverStation.Alliance.Red) DRIVER.leftY else -DRIVER.leftY },
-                yInput = { if (alliance == DriverStation.Alliance.Red) DRIVER.leftX else -DRIVER.leftX },
-                rotationInput = { if (alliance == DriverStation.Alliance.Red) -DRIVER.rightX else DRIVER.rightX },
+                xInput = { DRIVER.leftY },
+                yInput = { DRIVER.leftX },
+                rotationInput = { DRIVER.rightX },
                 translationCurve =
                     MultiCurve(
                         listOf(
