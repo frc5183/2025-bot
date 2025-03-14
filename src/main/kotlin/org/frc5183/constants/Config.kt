@@ -32,6 +32,9 @@ object Config {
      * the coral has been detected.
      */
     val CORAL_INTAKE_TIME: Duration = 1.seconds
+    const val CORAL_INTAKE_SPEED: Double = 0.5
+    const val CORAL_SHOOT_SPEED: Double = 1.0
+
     const val VISION_POSE_ESTIMATION = false
     val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded) // https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
