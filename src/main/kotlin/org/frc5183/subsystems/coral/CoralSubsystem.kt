@@ -23,7 +23,7 @@ class CoralSubsystem(private val io: CoralIO, private val elevator: ElevatorSubs
       SmartDashboard.putBoolean("Sees Coral", seesCoral)
       Logger.processInputs("Coral", ioInputs)
 
-      //if (!elevator.bottomLimitSwitch) return // Ignore any coral stuff when moving elevator.
+      if (!elevator.bottomLimitSwitch) return // Ignore any coral stuff when moving elevator.
       if (seesCoral && !visibleCoralBuffer) visibleCoralBuffer = true
       if (!seesCoral && visibleCoralBuffer) {
         hasCoral = true
