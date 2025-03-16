@@ -24,7 +24,6 @@ object Config {
     const val ELEVATOR_HOLD_SPEED = 0.2
 
     val CORAL_SHOOT_TIME: Duration = 1.seconds
-    const val CORAL_MOTOR_MAXIMUM_SPEED: Double = 1.0 // todo
     const val CORAL_PROXIMITY_THRESHOLD: Int = 200
 
     /**
