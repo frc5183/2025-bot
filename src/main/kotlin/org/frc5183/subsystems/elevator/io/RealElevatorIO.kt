@@ -20,7 +20,10 @@ class RealElevatorIO(
         get() = !bottomLimitSwitch.get()
 
     init {
-        motor.encoder.position = 0.0
+        if (bottomLimitSwitchTriggered)
+          motor.encoder.position = 0.0
+        else
+          throw IllegalStateException("Elevator bottom limit switch must be triggered at startup") // I'm not a fan of throwing exceptions in FRC, but this at robot init, so we should be fine...?
     }
 
     override fun updateInputs(
