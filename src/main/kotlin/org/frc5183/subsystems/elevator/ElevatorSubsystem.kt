@@ -41,14 +41,24 @@ class ElevatorSubsystem(
 
         currentStage = Config.ELEVATOR_STAGES.indexOfFirst { it >= io.motorEncoder }
 
-        if (io.bottomLimitSwitchTriggered) currentStage = 0
+        if (bottomLimitSwitch) currentStage = 0
+
+        if (bottomLimitSwitch)
+          if (!((io.motorSpeed > 0 && Config.ELEVATOR_MOTOR_INVERTED) || (io.motorSpeed < 0 && Config.ELEVATOR_MOTOR_INVERTED)))
+            io.stopElevator()
+
     }
 
 
     /**
      * Runs the elevator at [speed]
      */
-    fun runElevator(speed: Double) = io.runElevator(speed)
+    fun runElevator(speed: Double) {
+      if (bottomLimitSwitch)
+        if (!((speed > 0 && Config.ELEVATOR_MOTOR_INVERTED) || (speed < 0 && Config.ELEVATOR_MOTOR_INVERTED)))
+          io.runElevator(speed)
+    }
+  
 
     /**
      * Runs the elevator motor up.

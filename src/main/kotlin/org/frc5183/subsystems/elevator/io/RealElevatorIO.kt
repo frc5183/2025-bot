@@ -10,6 +10,9 @@ class RealElevatorIO(
     private val motor: SparkMax,
     private val bottomLimitSwitch: DigitalInput,
 ) : ElevatorIO {
+    override val motorSpeed: Double
+        get() = motor.get()
+
     override val motorEncoder: Angle
         get() = Units.Rotations.of((if (Config.ELEVATOR_MOTOR_INVERTED) -1.0 else 1.0) * motor.encoder.position)
 

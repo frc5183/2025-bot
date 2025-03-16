@@ -21,6 +21,7 @@ interface ElevatorIO {
         var bottomLimitSwitchTriggered by log(false)
     }
 
+    val motorSpeed: Double
     val motorEncoder: Angle
     val bottomLimitSwitchTriggered: Boolean
 
