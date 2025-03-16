@@ -2,6 +2,7 @@ package org.frc5183.subsystems.elevator
 
 import edu.wpi.first.wpilibj2.command.Subsystem
 import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.units.Units
 import edu.wpi.first.wpilibj.Timer
 import org.frc5183.constants.Config
 import org.frc5183.subsystems.elevator.io.ElevatorIO
@@ -30,7 +31,7 @@ class ElevatorSubsystem(
      * desired encoder value.
      */
     val stageDrift: Angle
-        get() = Config.ELEVATOR_STAGES[desiredStage] - io.motorEncoder
+        get() = (Config.ELEVATOR_STAGES.getOrNull(desiredStage) ?: Units.Degrees.of(0.0)) - io.motorEncoder
 
     val bottomLimitSwitch: Boolean
         get() = io.bottomLimitSwitchTriggered
