@@ -14,13 +14,13 @@ class LowerElevatorCommand(
     }
 
     override fun initialize() {
-        if (elevator.currentStage <= 0) {
+        if (elevator.desiredStage <= 0) {
             invalidStage = true
             return
         }
         elevator.desiredStage -= 1
 
-        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED)
+        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED / 2)
     }
 
 

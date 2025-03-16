@@ -74,7 +74,7 @@ object Controls {
      */
     val ELEVATOR_CURVE = LinearCurve(1.0, 0.0)
 
-    val BUTTON_DEBOUNCE_TIME: Duration = 0.1.seconds
+    val BUTTON_DEBOUNCE_TIME: Duration = 0.5.seconds
 
     /**
      * A function to be called during teleop init.
@@ -123,9 +123,9 @@ object Controls {
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
 
         // D-PAD Up
-        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
+        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
 
-        DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(
+        DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 AutoAimAndShoot({ DRIVER.x().asBoolean }, drive, vision).schedule()
             }),
@@ -134,17 +134,17 @@ object Controls {
         // Operator Commands Start
 
         // Coral Commands Start
-        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(IntakeCoralCommand(coralSubsystem))
-        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(ShootCoralCommand(coralSubsystem))
+        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(ShootCoralCommand(coralSubsystem))
         /*
-        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
           CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))) // First correct the elevator, then shoot the coral while holding the elevator.
         )
 
          */
 
         // Reset Coral State
-        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(
+        OPERATOR.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 coralSubsystem.clearCoral()
             }),
@@ -172,8 +172,8 @@ object Controls {
 
         // Elevator Commands Start
 
-        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(RaiseElevatorCommand(elevator))
-        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(LowerElevatorCommand(elevator))
+        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(RaiseElevatorCommand(elevator))
+        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(LowerElevatorCommand(elevator))
 
         val elevatorDriveCommand = 
             DriveElevatorCommand(
@@ -193,20 +193,20 @@ object Controls {
                     ),
             )
 
-        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).toggleOnTrue(elevatorDriveCommand)
+        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).toggleOnTrue(elevatorDriveCommand)
 
         // Elevator Commands Stop
 
         // Operator Commands End
 
-        DRIVER.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(
+        DRIVER.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 println("Driver cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()
             }),
         )
 
-        OPERATOR.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kBoth).onTrue(
+        OPERATOR.b().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
                 println("Operator cancelled all commands.")
                 CommandScheduler.getInstance().cancelAll()
