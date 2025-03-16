@@ -34,6 +34,12 @@ class ElevatorSubsystem(
 
     val bottomLimitSwitch: Boolean
         get() = io.bottomLimitSwitchTriggered
+    
+    val motorRunningUp: Boolean
+        get() = speedMovesUp(io.motorSpeed)
+
+    val motorRunningDown: Boolean
+        get() = speedMovesDown(io.motorSpeed)
 
     override fun periodic() {
         io.updateInputs(ioInputs, currentStage)
@@ -41,22 +47,19 @@ class ElevatorSubsystem(
 
         currentStage = Config.ELEVATOR_STAGES.indexOfFirst { it >= io.motorEncoder }
 
-        if (bottomLimitSwitch) currentStage = 0
-
-        if (bottomLimitSwitch)
-          if (!((io.motorSpeed > 0 && Config.ELEVATOR_MOTOR_INVERTED) || (io.motorSpeed < 0 && Config.ELEVATOR_MOTOR_INVERTED)))
-            io.stopElevator()
-
+        if (bottomLimitSwitch) {
+          currentStage = 0
+          if (motorRunningDown) stopElevator()
+        }
     }
-
 
     /**
      * Runs the elevator at [speed]
      */
     fun runElevator(speed: Double) {
-      if (bottomLimitSwitch)
-        if (!((speed > 0 && Config.ELEVATOR_MOTOR_INVERTED) || (speed < 0 && Config.ELEVATOR_MOTOR_INVERTED)))
-          io.runElevator(speed)
+      if (!bottomLimitSwitch) io.runElevator(speed)
+
+      if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
     }
   
 
@@ -80,4 +83,22 @@ class ElevatorSubsystem(
      * Should be called when the bottom limit switch is triggered.
      */
     fun resetEncoder() = io.resetEncoder()
+
+    /**
+     * Whether the given speed will move the elevator down.
+     *
+     * @param speed The speed to check.
+     * @return Whether the speed will move the elevator down.
+     */
+    fun speedMovesDown(speed: Double): Boolean =
+        speed > 0 && Config.ELEVATOR_MOTOR_INVERTED || speed < 0 && !Config.ELEVATOR_MOTOR_INVERTED
+
+    /**
+     * Whether the given speed will move the elevator up.
+     *
+     * @param speed The speed to check.
+     * @return Whether the speed will move the elevator up.
+     */
+    fun speedMovesUp(speed: Double): Boolean = !speedMovesDown(speed)
 }
+
