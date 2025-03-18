@@ -85,10 +85,13 @@ class TeleopDriveCommand(
         )
     }
 
-    fun applyCurveToTranslation(translation: Translation2d, curve: Curve): Translation2d {
-      val angle = atan2(translation.x, translation.y)
-      var magnitude = curve(sqrt(translation.x.pow(2) + translation.y.pow(2).coerceIn(0.0, 1.0)))
-      return Translation2d(magnitude * cos(angle), magnitude * sin(angle))
+    fun applyCurveToTranslation(
+        translation: Translation2d,
+        curve: Curve,
+    ): Translation2d {
+        val angle = atan2(translation.x, translation.y)
+        var magnitude = curve(sqrt(translation.x.pow(2) + translation.y.pow(2).coerceIn(0.0, 1.0)))
+        return Translation2d(magnitude * cos(angle), magnitude * sin(angle))
     }
 
     fun applyAllianceAwareTranslation(fieldRelativeTranslation: Translation2d): Translation2d =
