@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.216342106571903,
-        "y": 2.166053393328631
+        "x": 7.527868150684932,
+        "y": 1.861301369863014
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.129957067247434,
-        "y": 1.6096848985428793
+        "x": 5.39173101334897,
+        "y": 1.0212419081071917
       },
       "isLocked": false,
       "linkedName": "Right Start Point"
     },
     {
       "anchor": {
-        "x": 3.906678082191781,
-        "y": 0.9747859589041092
+        "x": 4.43257705479452,
+        "y": 0.704323630136986
       },
       "prevControl": {
-        "x": 3.2875855104330522,
-        "y": 1.3712547639598478
+        "x": 5.5537026470225435,
+        "y": 1.1018579530811108
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

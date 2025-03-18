@@ -11,18 +11,15 @@ class RealCoralIO(private val motor: SparkMax, private val colorSensor: ColorSen
     override val proximityValue: Int
         get() = colorSensor.getProximity()
 
-    override val proximityBaseline: Int = colorSensor.getProximity()
-    
     override fun updateInputs(inputs: CoralIO.CoralIOInputs, hasCoral: Boolean) {
         inputs.hasCoral = hasCoral
         inputs.seesCoral = seesCoral
         inputs.motorSpeed = motorSpeed
         inputs.proximityValue = proximityValue
-        inputs.proximityBaseline = proximityBaseline
     }
 
-    override fun runMotor() {
-        motor.set(Config.CORAL_MOTOR_MAXIMUM_SPEED)
+    override fun runMotor(speed: Double) {
+        motor.set(speed)
     }
 
     override fun stopMotor() {

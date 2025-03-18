@@ -2,6 +2,7 @@ package org.frc5183.commands.coral
 
 import edu.wpi.first.wpilibj2.command.Command
 import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.constants.Config
 
 class IntakeCoralCommand(private val coralSubsystem: CoralSubsystem) : Command() {
     init {
@@ -9,7 +10,7 @@ class IntakeCoralCommand(private val coralSubsystem: CoralSubsystem) : Command()
     }
 
     override fun initialize() {
-        coralSubsystem.runMotor()
+        coralSubsystem.runMotor(Config.CORAL_INTAKE_SPEED)
     }
 
     override fun end(interrupted: Boolean) {

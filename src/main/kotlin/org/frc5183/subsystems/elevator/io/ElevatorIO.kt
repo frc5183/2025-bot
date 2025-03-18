@@ -19,16 +19,11 @@ interface ElevatorIO {
          * Whether the bottom limit switch is triggered.
          */
         var bottomLimitSwitchTriggered by log(false)
-
-        /**
-         * Whether the top limit switch is triggered.
-         */
-        var topLimitSwitchTriggered by log(false)
     }
 
+    val motorSpeed: Double
     val motorEncoder: Angle
     val bottomLimitSwitchTriggered: Boolean
-    val topLimitSwitchTriggered: Boolean
 
     /**
      * Updates all [inputs] with the correct values for logging.
