@@ -13,7 +13,6 @@ object AutoConstants {
     /**
      * The speed limit factor to apply to the robot's translation and rotation speeds/accelerations when driving autonomously.
      */
-    // todo: should we find a way to use this with curves? it might confuse pathplanner, but a basic limiter curve might work fine.
     const val SPEED_LIMIT_FACTOR = 1.0
 
     /**
@@ -25,8 +24,19 @@ object AutoConstants {
             PhysicalConstants.MOI,
             ModuleConfig(
                 PhysicalConstants.WHEEL_DIAMETER.div(2.0), // radius, not diameter
-                Units.MetersPerSecond.of(Units.RadiansPerSecond.of(PhysicalConstants.DRIVE_MOTOR_TYPE.freeSpeedRadPerSec).`in`(Units.RotationsPerSecond).times(60).times(PhysicalConstants.DRIVE_GEAR_RATIO).times(PhysicalConstants.WHEEL_DIAMETER.`in`(
-                    Units.Meters))),
+                Units.MetersPerSecond.of(
+                    Units.RadiansPerSecond
+                        .of(
+                            PhysicalConstants.DRIVE_MOTOR_TYPE.freeSpeedRadPerSec,
+                        ).`in`(Units.RotationsPerSecond)
+                        .times(60)
+                        .times(PhysicalConstants.DRIVE_GEAR_RATIO)
+                        .times(
+                            PhysicalConstants.WHEEL_DIAMETER.`in`(
+                                Units.Meters,
+                            ),
+                        ),
+                ),
                 PhysicalConstants.WHEEL_COF,
                 PhysicalConstants.DRIVE_MOTOR_TYPE,
                 PhysicalConstants.DRIVE_CURRENT_LIMIT,

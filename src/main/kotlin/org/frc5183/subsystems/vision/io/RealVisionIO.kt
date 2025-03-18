@@ -20,24 +20,28 @@ open class RealVisionIO(
 
     override fun updateInputs(inputs: VisionIO.VisionIOInputs) {
         val enabledNames = cameras.map { it.name }
-        inputs.camerasEnabled = MutableList(maxOf(inputs.camerasEnabled.size, enabledNames.size)) {
-            enabledNames.getOrNull(it) ?: "null"
-        }.toTypedArray()
+        inputs.camerasEnabled =
+            MutableList(maxOf(inputs.camerasEnabled.size, enabledNames.size)) {
+                enabledNames.getOrNull(it) ?: "null"
+            }.toTypedArray()
 
         val activeNames = cameras.filter { it.isConnected }.map { it.name }
-        inputs.camerasActive = MutableList(maxOf(inputs.camerasActive.size, activeNames.size)) {
-            activeNames.getOrNull(it) ?: "null"
-        }.toTypedArray()
+        inputs.camerasActive =
+            MutableList(maxOf(inputs.camerasActive.size, activeNames.size)) {
+                activeNames.getOrNull(it) ?: "null"
+            }.toTypedArray()
 
         val withTargetsNames = cameras.filter { it.visibleTargets.isNotEmpty() }.map { it.name }
-        inputs.camerasWithTargets = MutableList(maxOf(inputs.camerasWithTargets.size, withTargetsNames.size)) {
-            withTargetsNames.getOrNull(it) ?: "null"
-        }.toTypedArray()
+        inputs.camerasWithTargets =
+            MutableList(maxOf(inputs.camerasWithTargets.size, withTargetsNames.size)) {
+                withTargetsNames.getOrNull(it) ?: "null"
+            }.toTypedArray()
 
         val targetNames = visibleTargets.map { it.name }
-        inputs.visibleTargets = MutableList(maxOf(inputs.visibleTargets.size, targetNames.size)) {
-            targetNames.getOrNull(it) ?: "null"
-        }.toTypedArray()
+        inputs.visibleTargets =
+            MutableList(maxOf(inputs.visibleTargets.size, targetNames.size)) {
+                targetNames.getOrNull(it) ?: "null"
+            }.toTypedArray()
     }
 
     override fun updateUnreadResults() {

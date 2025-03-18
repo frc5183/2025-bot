@@ -27,6 +27,5 @@ class RaiseElevatorCommand(
         elevator.stopElevator()
     }
 
-
     override fun isFinished() = elevator.desiredStage <= elevator.currentStage || invalidStage
 }

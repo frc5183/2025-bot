@@ -17,11 +17,10 @@ class ExponentialCurve(
      * The [base] constant in the equation.
      */
     val base: Double,
-
     /**
      * The [divisor] constant in the equation.
      */
-    val divisor: Double
+    val divisor: Double,
 ) : Curve {
     override operator fun invoke(input: Double): Double {
         val sign = if (input == 0.0) 1.0 else input.sign

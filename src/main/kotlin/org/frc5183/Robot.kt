@@ -2,53 +2,43 @@ package org.frc5183
 
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
-import com.pathplanner.lib.commands.PathPlannerAuto
 import com.pathplanner.lib.pathfinding.Pathfinding
-import com.revrobotics.spark.SparkMax
 import com.revrobotics.ColorSensorV3
+import com.revrobotics.spark.SparkMax
 import edu.wpi.first.hal.FRCNetComm.tInstances
 import edu.wpi.first.hal.FRCNetComm.tResourceType
 import edu.wpi.first.hal.HAL
-import edu.wpi.first.math.geometry.Pose2d
-import edu.wpi.first.math.geometry.Rotation2d
-import edu.wpi.first.math.geometry.Translation2d
-import edu.wpi.first.math.kinematics.ChassisSpeeds
-import edu.wpi.first.units.Units
-import edu.wpi.first.util.sendable.Sendable
+import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.Threads
 import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
-import edu.wpi.first.wpilibj.DigitalInput
-import edu.wpi.first.wpilibj.I2C
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import org.frc5183.commands.coral.ShootCoralCommand
-import org.frc5183.commands.drive.DriveToPose2d
-import org.frc5183.commands.elevator.RaiseElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
+import org.frc5183.commands.elevator.RaiseElevatorCommand
 import org.frc5183.constants.*
 import org.frc5183.math.auto.pathfinding.DummyPathfinder
 import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.subsystems.climber.io.RealClimberIO
+import org.frc5183.subsystems.coral.CoralSubsystem
+import org.frc5183.subsystems.coral.io.RealCoralIO
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.drive.io.RealSwerveDriveIO
 import org.frc5183.subsystems.drive.io.SimulatedSwerveDriveIO
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
+import org.frc5183.subsystems.elevator.io.RealElevatorIO
 import org.frc5183.subsystems.vision.VisionSubsystem
 import org.frc5183.subsystems.vision.io.RealVisionIO
-import org.frc5183.subsystems.elevator.io.RealElevatorIO
 import org.frc5183.subsystems.vision.io.SimulatedVisionIO
 import org.littletonrobotics.junction.LogFileUtil
 import org.littletonrobotics.junction.LoggedRobot
 import org.littletonrobotics.junction.Logger
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser
 import org.littletonrobotics.junction.networktables.NT4Publisher
 import org.littletonrobotics.junction.wpilog.WPILOGReader
 import org.littletonrobotics.junction.wpilog.WPILOGWriter
-import org.frc5183.subsystems.coral.CoralSubsystem
-import org.frc5183.subsystems.coral.io.RealCoralIO
 
 /**
  * The functions in this object (which basically functions as a singleton class) are called automatically
@@ -113,7 +103,7 @@ object Robot : LoggedRobot() {
             }
         }
 
-        //if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
+        // if (State.mode != State.Mode.REAL) Logger.start() // todo: we don't have enough RAM to log on the RIO v1.0
         Logger.start()
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
@@ -133,21 +123,38 @@ object Robot : LoggedRobot() {
 
         drive = SwerveDriveSubsystem(if (State.mode == State.Mode.REAL) RealSwerveDriveIO() else SimulatedSwerveDriveIO(), vision)
 
-        climber = ClimberSubsystem(RealClimberIO(SparkMax(DeviceConstants.CLIMBER_CAN, DeviceConstants.CLIMBER_MOTOR_TYPE))) // todo: simulate this io
+        climber =
+            ClimberSubsystem(
+                RealClimberIO(
+                    SparkMax(
+                        DeviceConstants.CLIMBER_CAN,
+                        DeviceConstants.CLIMBER_MOTOR_TYPE,
+                    ),
+                ),
+            ) // todo: simulate this io
 
-        elevator = ElevatorSubsystem(
-          RealElevatorIO(
-            SparkMax(
-              DeviceConstants.ELEVATOR_MOTOR_ID, DeviceConstants.ELEVATOR_MOTOR_TYPE
-            ),
-            DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
-          )
-        )
+        elevator =
+            ElevatorSubsystem(
+                RealElevatorIO(
+                    SparkMax(
+                        DeviceConstants.ELEVATOR_MOTOR_ID,
+                        DeviceConstants.ELEVATOR_MOTOR_TYPE,
+                    ),
+                    DigitalInput(DeviceConstants.ELEVATOR_BOTTOM_LIMIT_SWITCH_ID),
+                ),
+            )
 
-        coralSubsystem = CoralSubsystem(RealCoralIO(SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE), ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT)), elevator)
+        coralSubsystem =
+            CoralSubsystem(
+                RealCoralIO(
+                    SparkMax(DeviceConstants.CORAL_MOTOR_ID, DeviceConstants.CORAL_MOTOR_TYPE),
+                    ColorSensorV3(DeviceConstants.CORAL_COLOR_SENSOR_PORT),
+                ),
+                elevator,
+            )
 
         CommandScheduler.getInstance().registerSubsystem(
-            //vision,
+            // vision,
             drive,
             climber,
             elevator,
@@ -155,11 +162,11 @@ object Robot : LoggedRobot() {
         )
 
         NamedCommands.registerCommands(
-          mapOf(
-            "Shoot Coral" to ShootCoralCommand(coralSubsystem),
-            "Raise Elevator" to RaiseElevatorCommand(elevator),
-            "Lower Elevator" to LowerElevatorCommand(elevator),
-          )
+            mapOf(
+                "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+                "Raise Elevator" to RaiseElevatorCommand(elevator),
+                "Lower Elevator" to LowerElevatorCommand(elevator),
+            ),
         )
 
         autoChooser = AutoBuilder.buildAutoChooser()
@@ -171,12 +178,12 @@ object Robot : LoggedRobot() {
         }
 
         /**
-        CommandScheduler.getInstance().onCommandExecute {
-            if (it.name != "TeleopDriveCommand") {
-                println("Command executed: ${it.name}")
-            }
-        }
-        */
+         CommandScheduler.getInstance().onCommandExecute {
+         if (it.name != "TeleopDriveCommand") {
+         println("Command executed: ${it.name}")
+         }
+         }
+         */
 
         CommandScheduler.getInstance().onCommandFinish {
             println("Command finished: ${it.name}")

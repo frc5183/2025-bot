@@ -54,13 +54,14 @@ class PiecewiseCurveTest {
 
     @Test
     fun `test piecewise curve with overlapping conditions`() {
-        val curve = PiecewiseCurve(
-            linkedMapOf(
-                { input: Double -> input > 0.0 } to Curve { 1.0 },
-                { input: Double -> input > 2.0 } to Curve { 2.0 },
-                { _: Double -> true } to Curve { -1.0 } // Default case
+        val curve =
+            PiecewiseCurve(
+                linkedMapOf(
+                    { input: Double -> input > 0.0 } to Curve { 1.0 },
+                    { input: Double -> input > 2.0 } to Curve { 2.0 },
+                    { _: Double -> true } to Curve { -1.0 }, // Default case
+                ),
             )
-        )
 
         assertEquals(1.0, curve(1.0), DELTA) // First condition matches
         assertEquals(1.0, curve(3.0), DELTA) // First condition matches, not second

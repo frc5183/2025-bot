@@ -1,10 +1,12 @@
 package org.frc5183.commands.coral
 
 import edu.wpi.first.wpilibj2.command.Command
-import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.constants.Config
+import org.frc5183.subsystems.coral.CoralSubsystem
 
-class IntakeCoralCommand(private val coralSubsystem: CoralSubsystem) : Command() {
+class IntakeCoralCommand(
+    private val coralSubsystem: CoralSubsystem,
+) : Command() {
     init {
         addRequirements(coralSubsystem)
     }

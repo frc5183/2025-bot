@@ -2,7 +2,6 @@ package org.frc5183.commands.drive
 
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.InstantCommand
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
 
@@ -11,9 +10,10 @@ import org.frc5183.subsystems.vision.VisionSubsystem
  * If multiple targets are in view on multiple cameras,
  * the robot will aim at the closest one on the primary camera.
  */
-// todo: make sure this doesn't run during teleop if we're not holding a button otherwise its not allowed by FRC rules
-// todo v2: is there a better way to do these kinds of commands? idk if subclassing command is the right way or not
-fun AutoAimCommand(drive: SwerveDriveSubsystem, vision: VisionSubsystem): Command {
+fun AutoAimCommand(
+    drive: SwerveDriveSubsystem,
+    vision: VisionSubsystem,
+): Command {
     vision.getNearestTarget()?.let { target ->
         return AimCommand(target, drive, vision)
     }
