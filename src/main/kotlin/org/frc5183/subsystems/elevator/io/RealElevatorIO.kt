@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkMax
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.wpilibj.DigitalInput
+import edu.wpi.first.wpilibj.Alert
 import org.frc5183.constants.Config
 
 class RealElevatorIO(
@@ -23,7 +24,7 @@ class RealElevatorIO(
         if (bottomLimitSwitchTriggered)
           motor.encoder.position = 0.0
         else
-          throw IllegalStateException("Elevator bottom limit switch must be triggered at startup") // I'm not a fan of throwing exceptions in FRC, but this at robot init, so we should be fine...?
+          Alert("Bottom limit switch was not triggered at startup!", Alert.AlertType.kError).set(true)
     }
 
     override fun updateInputs(
