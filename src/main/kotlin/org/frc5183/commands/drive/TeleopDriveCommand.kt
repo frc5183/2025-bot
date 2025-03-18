@@ -8,6 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command
 import org.frc5183.constants.PhysicalConstants
 import org.frc5183.math.curve.Curve
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * A command that allows the driver to control the robot's translation and rotation using the joystick.
@@ -52,7 +57,7 @@ class TeleopDriveCommand(
     override fun initialize() {}
 
     override fun execute() {
-        var translation = Translation2d(translationCurve(xInput()), translationCurve(yInput()))
+        var translation = applyCurveToTranslation(Translation2d(xInput(), yInput()), translationCurve)
 
         if (fieldRelative) {
             translation = applyAllianceAwareTranslation(translation)
@@ -78,6 +83,12 @@ class TeleopDriveCommand(
                 )
             },
         )
+    }
+
+    fun applyCurveToTranslation(translation: Translation2d, curve: Curve): Translation2d {
+      val angle = atan2(translation.x, translation.y)
+      var magnitude = curve(sqrt(translation.x.pow(2) + translation.y.pow(2).coerceIn(0.0, 1.0)))
+      return Translation2d(magnitude * cos(angle), magnitude * sin(angle))
     }
 
     fun applyAllianceAwareTranslation(fieldRelativeTranslation: Translation2d): Translation2d =
