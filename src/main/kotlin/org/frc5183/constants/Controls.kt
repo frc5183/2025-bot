@@ -1,32 +1,27 @@
 package org.frc5183.constants
 
 import edu.wpi.first.math.filter.Debouncer
-import edu.wpi.first.wpilibj.DriverStation
-import edu.wpi.first.wpilibj.event.EventLoop
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.InstantCommand
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController
+import org.frc5183.commands.climber.DriveClimberCommand
+import org.frc5183.commands.climber.PullClimberCommand
+import org.frc5183.commands.coral.IntakeCoralCommand
+import org.frc5183.commands.coral.ShootCoralCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.elevator.DriveElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.commands.elevator.RaiseElevatorCommand
-import org.frc5183.commands.elevator.CorrectElevatorCommand
-import org.frc5183.commands.elevator.HoldElevatorCommand
 import org.frc5183.commands.teleop.AutoAimAndShoot
-import org.frc5183.commands.coral.IntakeCoralCommand
-import org.frc5183.commands.coral.ShootCoralCommand
-import org.frc5183.commands.climber.PullClimberCommand
-import org.frc5183.commands.climber.DriveClimberCommand
 import org.frc5183.math.curve.*
+import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.subsystems.coral.CoralSubsystem
 import org.frc5183.subsystems.drive.SwerveDriveSubsystem
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.subsystems.vision.VisionSubsystem
-import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.target.FieldTarget
-import kotlin.jvm.optionals.getOrNull
 import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -65,7 +60,7 @@ object Controls {
      * The curve applied to the climb input, among other input filtering (deadband, range clamps, etc.)
      */
     val CLIMB_CURVE = LinearCurve(1.0, 0.0)
-    
+
     /**
      * The curve applied to manual elevator control with joystick.
      */
@@ -120,7 +115,12 @@ object Controls {
         drive.defaultCommand = TELEOP_DRIVE_COMMAND
 
         // D-PAD Up
-        DRIVER.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
+        DRIVER
+            .povUp()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).onTrue(AimCommand(FieldTarget.Pipe, drive, vision))
 
         DRIVER.x().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
             InstantCommand({
@@ -131,8 +131,18 @@ object Controls {
         // Operator Commands Start
 
         // Coral Commands Start
-        OPERATOR.y().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(IntakeCoralCommand(coralSubsystem))
-        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(ShootCoralCommand(coralSubsystem))
+        OPERATOR
+            .y()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).onTrue(IntakeCoralCommand(coralSubsystem))
+        OPERATOR
+            .a()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).onTrue(ShootCoralCommand(coralSubsystem))
         /*
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
           CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))) // First correct the elevator, then shoot the coral while holding the elevator.
@@ -148,31 +158,44 @@ object Controls {
         )
 
         // Coral Commands End
-        
+
         // Climber Command Start
         OPERATOR.rightTrigger().whileTrue(PullClimberCommand(climber))
         OPERATOR.rightStick().toggleOnTrue(
-          DriveClimberCommand(
-            climber, 
-            input = { OPERATOR.rightY }, 
-            inputCurve = MultiCurve(listOf(
-              PiecewiseCurve(
-                linkedMapOf(
-                  { input: Double -> abs(input) < TRANSLATION_DEADBAND } to NullCurve(), // Apply a deadband
-                  { input: Double -> abs(input) > TRANSLATION_DEADBAND } to CLIMB_CURVE, // Apply our actual curve.
-                ),
-              ),
-              LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
-            ))
-          )
+            DriveClimberCommand(
+                climber,
+                input = { OPERATOR.rightY },
+                inputCurve =
+                    MultiCurve(
+                        listOf(
+                            PiecewiseCurve(
+                                linkedMapOf(
+                                    { input: Double -> abs(input) < TRANSLATION_DEADBAND } to NullCurve(), // Apply a deadband
+                                    { input: Double -> abs(input) > TRANSLATION_DEADBAND } to CLIMB_CURVE, // Apply our actual curve.
+                                ),
+                            ),
+                            LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+                        ),
+                    ),
+            ),
         )
 
         // Elevator Commands Start
 
-        OPERATOR.povUp().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(RaiseElevatorCommand(elevator))
-        OPERATOR.povDown().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(LowerElevatorCommand(elevator))
+        OPERATOR
+            .povUp()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).onTrue(RaiseElevatorCommand(elevator))
+        OPERATOR
+            .povDown()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).onTrue(LowerElevatorCommand(elevator))
 
-        val elevatorDriveCommand = 
+        val elevatorDriveCommand =
             DriveElevatorCommand(
                 elevator,
                 input = { OPERATOR.leftY },
@@ -190,7 +213,12 @@ object Controls {
                     ),
             )
 
-        OPERATOR.leftStick().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).toggleOnTrue(elevatorDriveCommand)
+        OPERATOR
+            .leftStick()
+            .debounce(
+                BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
+                Debouncer.DebounceType.kFalling,
+            ).toggleOnTrue(elevatorDriveCommand)
 
         // Elevator Commands Stop
 

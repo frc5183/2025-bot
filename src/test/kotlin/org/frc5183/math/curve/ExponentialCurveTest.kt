@@ -8,7 +8,7 @@ class ExponentialCurveTest {
     private companion object {
         private const val DELTA = 0.0001
     }
-    
+
     @Test
     fun `test exponential curve with positive base`() {
         val base = 3.0

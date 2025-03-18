@@ -16,7 +16,6 @@ object DeviceConstants {
     const val CLIMBER_CAN: Int = 7
     val CLIMBER_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless
 
-
     const val CORAL_MOTOR_ID: Int = 6
     val CORAL_MOTOR_TYPE: SparkLowLevel.MotorType = SparkLowLevel.MotorType.kBrushless // Neo 550
     val CORAL_COLOR_SENSOR_PORT: I2C.Port = I2C.Port.kOnboard

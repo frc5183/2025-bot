@@ -1,9 +1,8 @@
 package org.frc5183.subsystems.elevator
 
-import edu.wpi.first.wpilibj2.command.Subsystem
-import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.units.Units
-import edu.wpi.first.wpilibj.Timer
+import edu.wpi.first.units.measure.Angle
+import edu.wpi.first.wpilibj2.command.Subsystem
 import org.frc5183.constants.Config
 import org.frc5183.subsystems.elevator.io.ElevatorIO
 import org.littletonrobotics.junction.Logger
@@ -13,7 +12,7 @@ class ElevatorSubsystem(
 ) : Subsystem {
     private val ioInputs: ElevatorIO.ElevatorIOInputs = ElevatorIO.ElevatorIOInputs()
 
-    //private val encoderZero: Angle = io.motorEncoder
+    // private val encoderZero: Angle = io.motorEncoder
 
     /**
      * The desired stage the elevator should be on.
@@ -35,7 +34,7 @@ class ElevatorSubsystem(
 
     val bottomLimitSwitch: Boolean
         get() = io.bottomLimitSwitchTriggered
-    
+
     val motorRunningUp: Boolean
         get() = speedMovesUp(io.motorSpeed)
 
@@ -49,8 +48,8 @@ class ElevatorSubsystem(
         currentStage = Config.ELEVATOR_STAGES.indexOfLast { it <= io.motorEncoder }.coerceAtLeast(0)
 
         if (bottomLimitSwitch) {
-          currentStage = 0
-          if (motorRunningDown) stopElevator()
+            currentStage = 0
+            if (motorRunningDown) stopElevator()
         }
     }
 
@@ -58,11 +57,10 @@ class ElevatorSubsystem(
      * Runs the elevator at [speed]
      */
     fun runElevator(speed: Double) {
-      if (!bottomLimitSwitch) io.runElevator(speed)
+        if (!bottomLimitSwitch) io.runElevator(speed)
 
-      if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
+        if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
     }
-  
 
     /**
      * Runs the elevator motor up.
@@ -91,8 +89,7 @@ class ElevatorSubsystem(
      * @param speed The speed to check.
      * @return Whether the speed will move the elevator down.
      */
-    fun speedMovesDown(speed: Double): Boolean =
-        speed > 0 && Config.ELEVATOR_MOTOR_INVERTED || speed < 0 && !Config.ELEVATOR_MOTOR_INVERTED
+    fun speedMovesDown(speed: Double): Boolean = speed > 0 && Config.ELEVATOR_MOTOR_INVERTED || speed < 0 && !Config.ELEVATOR_MOTOR_INVERTED
 
     /**
      * Whether the given speed will move the elevator up.
@@ -102,4 +99,3 @@ class ElevatorSubsystem(
      */
     fun speedMovesUp(speed: Double): Boolean = !speedMovesDown(speed)
 }
-

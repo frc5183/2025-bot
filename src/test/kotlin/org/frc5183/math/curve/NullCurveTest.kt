@@ -7,7 +7,7 @@ class NullCurveTest {
     private companion object {
         private const val DELTA = 0.0001
     }
-    
+
     @Test
     fun `test null curve always returns zero`() {
         val curve = NullCurve()

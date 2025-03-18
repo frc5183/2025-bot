@@ -3,8 +3,8 @@ package org.frc5183.subsystems.elevator.io
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.units.Units
 import edu.wpi.first.units.measure.Angle
-import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj.Alert
+import edu.wpi.first.wpilibj.DigitalInput
 import org.frc5183.constants.Config
 
 class RealElevatorIO(
@@ -21,10 +21,11 @@ class RealElevatorIO(
         get() = !bottomLimitSwitch.get()
 
     init {
-        if (bottomLimitSwitchTriggered)
-          motor.encoder.position = 0.0
-        else
-          Alert("Bottom limit switch was not triggered at startup!", Alert.AlertType.kError).set(true)
+        if (bottomLimitSwitchTriggered) {
+            motor.encoder.position = 0.0
+        } else {
+            Alert("Bottom limit switch was not triggered at startup!", Alert.AlertType.kError).set(true)
+        }
     }
 
     override fun updateInputs(

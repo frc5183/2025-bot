@@ -11,13 +11,14 @@ import kotlin.time.Duration.Companion.seconds
  * Miscellaneous configuration constants.
  */
 object Config {
-    val ELEVATOR_STAGES: List<Angle> = listOf(
-        Units.Rotations.of(0.0),
-        Units.Rotations.of(10.0),
-        Units.Rotations.of(20.0),
-        Units.Rotations.of(30.0),
-        Units.Rotations.of(40.0)
-    )
+    val ELEVATOR_STAGES: List<Angle> =
+        listOf(
+            Units.Rotations.of(0.0),
+            Units.Rotations.of(10.0),
+            Units.Rotations.of(20.0),
+            Units.Rotations.of(30.0),
+            Units.Rotations.of(40.0),
+        )
     val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
     const val ELEVATOR_MOTOR_INVERTED: Boolean = true
     const val ELEVATOR_MOVEMENT_SPEED = 0.3
@@ -35,6 +36,6 @@ object Config {
     const val CORAL_SHOOT_SPEED: Double = 1.0
 
     const val VISION_POSE_ESTIMATION = false
-    val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded) // https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf
+    val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
 }

@@ -1,8 +1,8 @@
 package org.frc5183.commands.elevator
 
 import edu.wpi.first.wpilibj2.command.Command
-import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.constants.Config
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 
 class LowerElevatorCommand(
     val elevator: ElevatorSubsystem,
@@ -22,7 +22,6 @@ class LowerElevatorCommand(
 
         elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED / 2)
     }
-
 
     override fun end(interrupted: Boolean) {
         elevator.stopElevator()

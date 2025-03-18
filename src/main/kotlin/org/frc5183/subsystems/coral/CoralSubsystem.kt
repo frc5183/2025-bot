@@ -6,7 +6,10 @@ import org.frc5183.subsystems.coral.io.CoralIO
 import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.littletonrobotics.junction.Logger
 
-class CoralSubsystem(private val io: CoralIO, private val elevator: ElevatorSubsystem) : Subsystem {
+class CoralSubsystem(
+    private val io: CoralIO,
+    private val elevator: ElevatorSubsystem,
+) : Subsystem {
     private val ioInputs = CoralIO.CoralIOInputs()
 
     var hasCoral: Boolean = false
@@ -18,17 +21,17 @@ class CoralSubsystem(private val io: CoralIO, private val elevator: ElevatorSubs
     private var visibleCoralBuffer: Boolean = false
 
     override fun periodic() {
-      io.updateInputs(ioInputs, hasCoral)
-      SmartDashboard.putBoolean("Has Coral", hasCoral)
-      SmartDashboard.putBoolean("Sees Coral", seesCoral)
-      Logger.processInputs("Coral", ioInputs)
+        io.updateInputs(ioInputs, hasCoral)
+        SmartDashboard.putBoolean("Has Coral", hasCoral)
+        SmartDashboard.putBoolean("Sees Coral", seesCoral)
+        Logger.processInputs("Coral", ioInputs)
 
-      if (!elevator.bottomLimitSwitch) return // Ignore any coral stuff when moving elevator.
-      if (seesCoral && !visibleCoralBuffer) visibleCoralBuffer = true
-      if (!seesCoral && visibleCoralBuffer) {
-        hasCoral = true
-        visibleCoralBuffer = false
-      }
+        if (!elevator.bottomLimitSwitch) return // Ignore any coral stuff when moving elevator.
+        if (seesCoral && !visibleCoralBuffer) visibleCoralBuffer = true
+        if (!seesCoral && visibleCoralBuffer) {
+            hasCoral = true
+            visibleCoralBuffer = false
+        }
     }
 
     fun runMotor(speed: Double) {

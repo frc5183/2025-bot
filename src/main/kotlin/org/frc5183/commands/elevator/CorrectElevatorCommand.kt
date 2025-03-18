@@ -1,14 +1,16 @@
 package org.frc5183.commands.elevator
 
 import edu.wpi.first.wpilibj2.command.Command
-import org.frc5183.subsystems.elevator.ElevatorSubsystem
 import org.frc5183.constants.Config
+import org.frc5183.subsystems.elevator.ElevatorSubsystem
 
 /**
  * Can be ran before another command to move the elevator to the correct
  * stage to account for sag.
  */
-class CorrectElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
+class CorrectElevatorCommand(
+    val elevator: ElevatorSubsystem,
+) : Command() {
     init {
         addRequirements(elevator)
     }
@@ -21,8 +23,5 @@ class CorrectElevatorCommand(val elevator: ElevatorSubsystem) : Command() {
         elevator.stopElevator()
     }
 
-    override fun isFinished(): Boolean {
-        return elevator.stageDrift < Config.ELEVATOR_MAX_ALLOWED_DRIFT
-    }
+    override fun isFinished(): Boolean = elevator.stageDrift < Config.ELEVATOR_MAX_ALLOWED_DRIFT
 }
-

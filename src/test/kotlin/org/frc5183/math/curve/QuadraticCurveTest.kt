@@ -7,7 +7,7 @@ class QuadraticCurveTest {
     private companion object {
         private const val DELTA = 0.0001
     }
-    
+
     @Test
     fun `test quadratic curve with positive a`() {
         val a = 1.0
