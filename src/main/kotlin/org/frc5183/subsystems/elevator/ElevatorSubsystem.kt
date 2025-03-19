@@ -44,11 +44,14 @@ class ElevatorSubsystem(
     override fun periodic() {
         io.updateInputs(ioInputs, currentStage)
         Logger.processInputs("Elevator", ioInputs)
+        Logger.recordOutput("Elevator/Current Stage", currentStage)
+        Logger.recordOutput("Elevator/Desired Stage", desiredStage)
 
         currentStage = Config.ELEVATOR_STAGES.indexOfLast { it <= io.motorEncoder }.coerceAtLeast(0)
 
         if (bottomLimitSwitch) {
             currentStage = 0
+            io.resetEncoder()
             if (motorRunningDown) stopElevator()
         }
     }
