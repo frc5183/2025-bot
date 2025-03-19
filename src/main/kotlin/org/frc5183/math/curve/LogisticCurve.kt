@@ -29,6 +29,6 @@ class LogisticCurve(
             0.0 -> 0.0
             1.0 -> 1.0
             -1.0 -> -1.0
-            else -> input.sign * (1 / (1 + E.pow(-a * abs(input) - b)))
+            else -> input.sign * (1 / (1 + E.pow(-a * (abs(input) - b))))
         }
 }
