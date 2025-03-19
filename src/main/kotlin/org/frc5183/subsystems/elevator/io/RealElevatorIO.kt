@@ -10,6 +10,7 @@ import org.frc5183.constants.Config
 class RealElevatorIO(
     private val motor: SparkMax,
     private val bottomLimitSwitch: DigitalInput,
+    private val topLimitSwitch: DigitalInput,
 ) : ElevatorIO {
     override val motorSpeed: Double
         get() = motor.get()
@@ -19,6 +20,9 @@ class RealElevatorIO(
 
     override val bottomLimitSwitchTriggered: Boolean
         get() = !bottomLimitSwitch.get()
+
+    override val topLimitSwitchTriggered: Boolean
+        get() = topLimitSwitch.get()
 
     init {
         if (bottomLimitSwitchTriggered) {

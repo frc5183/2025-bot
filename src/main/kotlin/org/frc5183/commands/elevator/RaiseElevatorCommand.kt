@@ -14,7 +14,7 @@ class RaiseElevatorCommand(
     }
 
     override fun initialize() {
-        if (elevator.desiredStage >= Config.ELEVATOR_STAGES.size - 1 || elevator.currentStage >= Config.ELEVATOR_STAGES.size) {
+        if (elevator.desiredStage >= Config.ELEVATOR_STAGES.size || elevator.currentStage >= Config.ELEVATOR_STAGES.size) {
             invalidStage = true
             return
         }
@@ -29,5 +29,14 @@ class RaiseElevatorCommand(
         elevator.stopElevator()
     }
 
-    override fun isFinished() = invalidStage || elevator.desiredStage <= elevator.currentStage
+    override fun isFinished(): Boolean {
+        if (invalidStage) return true
+
+        if ((elevator.desiredStage >= Config.ELEVATOR_STAGES.size || elevator.currentStage >= Config.ELEVATOR_STAGES.size) && elevator.topLimitSwitch) return true
+
+        if (elevator.desiredStage != Config.ELEVATOR_STAGES.size && elevator.currentStage != Config.ELEVATOR_STAGES.size) return elevator.currentStage >= elevator.desiredStage
+
+        return false
+      
+    }
 }
