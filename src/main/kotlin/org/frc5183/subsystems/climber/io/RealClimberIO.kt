@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.DigitalInput
 
 class RealClimberIO(
     val motor: SparkMax,
-    val limitSwitch: DigitalInput
+    val limitSwitch: DigitalInput,
 ) : ClimberIO {
     override val limitSwitchTriggered: Boolean
-      get() = limitSwitch.get()
+        get() = limitSwitch.get()
 
     override fun updateInputs(inputs: ClimberIO.ClimberIOInputs) {
         inputs.motorSpeed = motor.get()
