@@ -32,6 +32,9 @@ class ElevatorSubsystem(
     val stageDrift: Angle
         get() = (Config.ELEVATOR_STAGES.getOrNull(desiredStage) ?: Units.Degrees.of(0.0)) - io.motorEncoder
 
+    val topLimitSwitch: Boolean
+        get() = io.topLimitSwitchTriggered
+
     val bottomLimitSwitch: Boolean
         get() = io.bottomLimitSwitchTriggered
 
@@ -54,6 +57,8 @@ class ElevatorSubsystem(
             io.resetEncoder()
             if (motorRunningDown) stopElevator()
         }
+
+        if (topLimitSwitch && motorRunningUp) stopElevator()
     }
 
     /**
