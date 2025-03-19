@@ -5,7 +5,13 @@ import org.frc5183.log.AutoLogInputs
 interface ClimberIO {
     class ClimberIOInputs : AutoLogInputs() {
         var motorSpeed by log(0.0)
+        var limitSwitch by log(false)
     }
+
+    /**
+     * Whether the limit switch (limiting how far we can pull) is triggered.
+     */
+    val limitSwitchTriggered: Boolean
 
     /**
      * Update the [inputs] to be logged.
