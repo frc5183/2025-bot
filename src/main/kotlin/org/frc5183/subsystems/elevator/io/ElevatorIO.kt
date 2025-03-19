@@ -19,7 +19,7 @@ interface ElevatorIO {
          * Whether the bottom limit switch is triggered.
          */
         var bottomLimitSwitchTriggered by log(false)
-        
+
         /**
          * Whether the top limit switch is triggered.
          */

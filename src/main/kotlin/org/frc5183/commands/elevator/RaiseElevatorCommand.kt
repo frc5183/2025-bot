@@ -32,11 +32,18 @@ class RaiseElevatorCommand(
     override fun isFinished(): Boolean {
         if (invalidStage) return true
 
-        if ((elevator.desiredStage >= Config.ELEVATOR_STAGES.size || elevator.currentStage >= Config.ELEVATOR_STAGES.size) && elevator.topLimitSwitch) return true
+        if ((elevator.desiredStage >= Config.ELEVATOR_STAGES.size || elevator.currentStage >= Config.ELEVATOR_STAGES.size) &&
+            elevator.topLimitSwitch
+        ) {
+            return true
+        }
 
-        if (elevator.desiredStage != Config.ELEVATOR_STAGES.size && elevator.currentStage != Config.ELEVATOR_STAGES.size) return elevator.currentStage >= elevator.desiredStage
+        if (elevator.desiredStage != Config.ELEVATOR_STAGES.size &&
+            elevator.currentStage != Config.ELEVATOR_STAGES.size
+        ) {
+            return elevator.currentStage >= elevator.desiredStage
+        }
 
         return false
-      
     }
 }
