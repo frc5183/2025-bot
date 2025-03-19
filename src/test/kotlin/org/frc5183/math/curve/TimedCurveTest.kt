@@ -9,7 +9,7 @@ class TimedCurveTest {
     private companion object {
         private const val DELTA = 0.0001
     }
-    
+
     @Test
     fun `test timed curve returns input before time expires`() {
         val curve = TimedCurve(1.seconds)

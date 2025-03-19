@@ -18,15 +18,12 @@ object PhysicalConstants {
     /**
      * A measure of [Voltage] over [Time] the swerve module's drive motor can ramp at.
      */
-    // todo: find a way to use PerUnit to represent ramp rates better.
     const val DRIVE_MOTOR_RAMP_RATE = 0.25
-    // val DRIVE_MOTOR_RAMP_RATE: Measure<out PerUnit<VoltageUnit, TimeUnit>> = PerUnit.combine(Units.Volts, Units.Seconds).of(0.25)
 
     /**
      * A measure of [Voltage] over [Time] the swerve module's angle motor can ramp at.
      */
     const val ANGLE_MOTOR_RAMP_RATE = 0.25
-    // val ANGLE_MOTOR_RAMP_RATE: Measure<out PerUnit<VoltageUnit, TimeUnit>> = PerUnit.combine(Units.Volts, Units.Seconds).of(0.25)
 
     /**
      * The type of [DCMotor] used for each swerve module's drive motor.
@@ -89,13 +86,15 @@ object PhysicalConstants {
     val WHEEL_DIAMETER: Distance = Units.Inches.of(4.0)
 
     // <editor-fold desc="Maximum Constraints">
+
     /**
      * The maximum [LinearVelocity] of the robot.
      */
-    // todo: should we calculate these values or see what they are in practice? (probably see)
     val MAX_SPEED: LinearVelocity =
-        // (W/G) * (π*d)
-        //  where W = free speed (rev/s), G = gear ratio, d = wheel diameter (meters)
+        /*
+         * (W/G) * (π*d)
+         * where W = free speed (rev/s), G = gear ratio, d = wheel diameter (meters)
+         */
         Units.MetersPerSecond.of(
             (
                 Units.RadiansPerSecond
@@ -103,7 +102,7 @@ object PhysicalConstants {
                     .`in`(Units.RevolutionsPerSecond)
                     .div(DRIVE_GEAR_RATIO)
             ) *
-                (Math.PI * WHEEL_DIAMETER.`in`(Units.Meters))
+                (Math.PI * WHEEL_DIAMETER.`in`(Units.Meters)),
         )
 
     /**
@@ -114,7 +113,7 @@ object PhysicalConstants {
     /**
      * The maximum [AngularVelocity] of the robot.
      */
-    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(180.0)
+    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(360.0)
 
     /**
      * The maximum [AngularAcceleration] of the robot.

@@ -10,30 +10,30 @@ import swervelib.motors.SwerveMotor
 import swervelib.motors.TalonFXSwerve
 
 object BackRightSwerveModuleConstants : SwerveModuleConstants {
-    override val NAME: String
-        = "backright"
+    override val NAME: String =
+        "backright"
 
-    override val LOCATION: Translation2d
-        = Translation2d(Units.Inches.of(-12.5), Units.Inches.of(-12.0))
+    override val LOCATION: Translation2d =
+        Translation2d(Units.Inches.of(-12.5), Units.Inches.of(-12.0))
 
-    override val ABSOLUTE_ENCODER: SwerveAbsoluteEncoder
-        = CANCoderSwerve(19)
+    override val ABSOLUTE_ENCODER: SwerveAbsoluteEncoder =
+        CANCoderSwerve(19)
 
-    override val ABSOLUTE_ENCODER_OFFSET: Angle
-        = Units.Degrees.of(302.959)
+    override val ABSOLUTE_ENCODER_OFFSET: Angle =
+        Units.Degrees.of(288.193)
 
-    override val ABSOLUTE_ENCODER_INVERTED: Boolean
-        = false
+    override val ABSOLUTE_ENCODER_INVERTED: Boolean =
+        false
 
-    override val DRIVE_MOTOR: SwerveMotor
-        = TalonFXSwerve(20, true, PhysicalConstants.DRIVE_MOTOR_TYPE)
+    override val DRIVE_MOTOR: SwerveMotor =
+        TalonFXSwerve(20, true, PhysicalConstants.DRIVE_MOTOR_TYPE)
 
-    override val DRIVE_MOTOR_INVERTED: Boolean
-        = false
+    override val DRIVE_MOTOR_INVERTED: Boolean =
+        false
 
-    override val ANGLE_MOTOR: SwerveMotor
-        = TalonFXSwerve(21, false, PhysicalConstants.ANGLE_MOTOR_TYPE)
+    override val ANGLE_MOTOR: SwerveMotor =
+        TalonFXSwerve(21, false, PhysicalConstants.ANGLE_MOTOR_TYPE)
 
-    override val ANGLE_MOTOR_INVERTED: Boolean
-        = false
+    override val ANGLE_MOTOR_INVERTED: Boolean =
+        false
 }

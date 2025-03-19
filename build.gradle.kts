@@ -2,12 +2,10 @@ import edu.wpi.first.deployutils.deploy.artifact.FileTreeArtifact
 import edu.wpi.first.gradlerio.deploy.roborio.FRCJavaArtifact
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 import edu.wpi.first.toolchain.NativePlatforms
+import org.gradle.api.tasks.JavaExec
 import org.gradle.plugins.ide.idea.model.IdeaLanguageLevel
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
-import org.gradle.api.tasks.JavaExec
-import groovy.json.JsonSlurper
-import java.io.File
 
 plugins {
     java
@@ -43,7 +41,7 @@ deploy {
                 jvmArgs.add("-XX:HeapDumpPath=\"/U/heap/dump.hprof\"")
             }
             artifacts.create("frcStaticFileDeploy", FileTreeArtifact::class.java) {
-                files = project.fileTree("src/main/deploy")
+                files = project.fileTree("deploy")
                 directory = "/home/lvuser/deploy"
                 // Change to true to delete files on roboRIO that no longer exist in deploy directory of this project
                 deleteOldFiles = true

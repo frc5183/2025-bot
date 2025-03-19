@@ -14,7 +14,7 @@ class PullClimberCommand(
     }
 
     override fun execute() {
-        climber.runMotor(1.0)
+        climber.runMotor(-0.5)
     }
 
     override fun end(interrupted: Boolean) {

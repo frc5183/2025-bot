@@ -7,7 +7,7 @@ class LimitedCurveTest {
     private companion object {
         private const val DELTA = 0.0001
     }
-    
+
     @Test
     fun `test limited curve with positive range`() {
         val min = 0.0

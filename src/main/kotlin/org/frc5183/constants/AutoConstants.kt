@@ -3,6 +3,7 @@ package org.frc5183.constants
 import com.pathplanner.lib.config.ModuleConfig
 import com.pathplanner.lib.config.RobotConfig
 import com.pathplanner.lib.path.PathConstraints
+import edu.wpi.first.units.Units
 import org.frc5183.constants.swerve.modules.BackLeftSwerveModuleConstants
 import org.frc5183.constants.swerve.modules.BackRightSwerveModuleConstants
 import org.frc5183.constants.swerve.modules.FrontLeftSwerveModuleConstants
@@ -12,8 +13,7 @@ object AutoConstants {
     /**
      * The speed limit factor to apply to the robot's translation and rotation speeds/accelerations when driving autonomously.
      */
-    // todo: should we find a way to use this with curves? it might confuse pathplanner, but a basic limiter curve might work fine.
-    const val SPEED_LIMIT_FACTOR = 0.75
+    const val SPEED_LIMIT_FACTOR = 1.0
 
     /**
      * The [RobotConfig] to be used in a [com.pathplanner.lib.auto.AutoBuilder].
@@ -24,7 +24,19 @@ object AutoConstants {
             PhysicalConstants.MOI,
             ModuleConfig(
                 PhysicalConstants.WHEEL_DIAMETER.div(2.0), // radius, not diameter
-                PhysicalConstants.MAX_SPEED,
+                Units.MetersPerSecond.of(
+                    Units.RadiansPerSecond
+                        .of(
+                            PhysicalConstants.DRIVE_MOTOR_TYPE.freeSpeedRadPerSec,
+                        ).`in`(Units.RotationsPerSecond)
+                        .times(60)
+                        .times(PhysicalConstants.DRIVE_GEAR_RATIO)
+                        .times(
+                            PhysicalConstants.WHEEL_DIAMETER.`in`(
+                                Units.Meters,
+                            ),
+                        ),
+                ),
                 PhysicalConstants.WHEEL_COF,
                 PhysicalConstants.DRIVE_MOTOR_TYPE,
                 PhysicalConstants.DRIVE_CURRENT_LIMIT,

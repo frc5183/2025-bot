@@ -11,7 +11,6 @@ import org.littletonrobotics.junction.AutoLog
  * If multiple targets are in view on multiple cameras,
  * the robot will aim at the closest one on the primary camera.
  */
-// todo: make sure this doesn't run during teleop if we're not holding a button otherwise its not allowed by FRC rules
 @AutoLog
 class AimCommand(
     private val target: FieldTarget,
