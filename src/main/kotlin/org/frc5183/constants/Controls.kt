@@ -49,7 +49,7 @@ object Controls {
     /**
      * The curve applied to the translation inputs, among other input filtering (deadband, range clamps, etc.)
      */
-    val TRANSLATION_CURVE = LogisticCurve(25.0, 0.6)
+    val TRANSLATION_CURVE = LogisticCurve(8.5, 0.6)
 
     /**
      * The curve applied to the rotation input, among other input filtering (deadband, range clamps, etc.)
