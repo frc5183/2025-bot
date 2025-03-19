@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.338146106881937,
-        "y": 5.929869682423468
+        "x": 6.399681391827616,
+        "y": 5.938493139623239
       },
       "isLocked": false,
       "linkedName": "Left Start Point"
@@ -20,12 +20,12 @@
         "y": 5.1970034246575345
       },
       "prevControl": {
-        "x": 6.173123799219414,
-        "y": 5.682362244109326
+        "x": 6.146438957302815,
+        "y": 5.685472760679671
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left First Coral"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.96375653207339
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
