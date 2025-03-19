@@ -12,6 +12,8 @@ class ClimberSubsystem(
     override fun periodic() {
         io.updateInputs(ioInputs)
         Logger.processInputs("Climber", ioInputs)
+
+        if (io.limitSwitchTriggered) stopMotor()
     }
 
     /**

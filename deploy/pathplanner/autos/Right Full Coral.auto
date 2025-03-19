@@ -1,0 +1,376 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Coral"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Correct Elevator"
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Shoot Coral"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Hold Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Coral Intake"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Coral Return"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Correct Elevator"
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Shoot Coral"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Hold Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Coral Intake 2"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Lower Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Coral Return 2"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Raise Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Correct Elevator"
+                      }
+                    },
+                    {
+                      "type": "race",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Shoot Coral"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Hold Elevator"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Right",
+  "choreoAuto": false
+}

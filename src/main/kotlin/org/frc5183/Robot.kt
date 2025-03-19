@@ -2,7 +2,6 @@ package org.frc5183
 
 import com.pathplanner.lib.auto.AutoBuilder
 import com.pathplanner.lib.auto.NamedCommands
-import com.pathplanner.lib.pathfinding.Pathfinding
 import com.revrobotics.ColorSensorV3
 import com.revrobotics.spark.SparkMax
 import edu.wpi.first.hal.FRCNetComm.tInstances
@@ -16,11 +15,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj.util.WPILibVersion
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.InstantCommand
+import org.frc5183.commands.coral.IntakeCoralCommand
 import org.frc5183.commands.coral.ShootCoralCommand
+import org.frc5183.commands.elevator.CorrectElevatorCommand
+import org.frc5183.commands.elevator.HoldElevatorCommand
 import org.frc5183.commands.elevator.LowerElevatorCommand
 import org.frc5183.commands.elevator.RaiseElevatorCommand
 import org.frc5183.constants.*
-import org.frc5183.math.auto.pathfinding.DummyPathfinder
 import org.frc5183.subsystems.climber.ClimberSubsystem
 import org.frc5183.subsystems.climber.io.RealClimberIO
 import org.frc5183.subsystems.coral.CoralSubsystem
@@ -108,14 +110,13 @@ object Robot : LoggedRobot() {
 
         // Set the pathfinder to use the LocalADStarAK pathfinder so that
         //  we can use the AdvantageKit replay logging.
-        Pathfinding.setPathfinder(DummyPathfinder("Example Path.path"))
 
         vision =
             VisionSubsystem(
                 if (State.mode ==
                     State.Mode.REAL
                 ) {
-                    RealVisionIO(listOf())
+                    RealVisionIO(listOf(DeviceConstants.FRONT_CAMERA))
                 } else {
                     SimulatedVisionIO(listOf())
                 },
@@ -129,6 +130,9 @@ object Robot : LoggedRobot() {
                     SparkMax(
                         DeviceConstants.CLIMBER_CAN,
                         DeviceConstants.CLIMBER_MOTOR_TYPE,
+                    ),
+                    DigitalInput(
+                        DeviceConstants.CLIMBER_LIMIT_SWITCH_ID,
                     ),
                 ),
             ) // todo: simulate this io
@@ -154,20 +158,36 @@ object Robot : LoggedRobot() {
             )
 
         CommandScheduler.getInstance().registerSubsystem(
-            // vision,
+            vision,
             drive,
             climber,
             elevator,
             coralSubsystem,
         )
 
-        NamedCommands.registerCommands(
-            mapOf(
-                "Shoot Coral" to ShootCoralCommand(coralSubsystem),
-                "Raise Elevator" to RaiseElevatorCommand(elevator),
-                "Lower Elevator" to LowerElevatorCommand(elevator),
-            ),
-        )
+        if (State.mode == State.Mode.REAL) {
+            NamedCommands.registerCommands(
+                mapOf(
+                    "Shoot Coral" to ShootCoralCommand(coralSubsystem),
+                    "Intake Coral" to IntakeCoralCommand(coralSubsystem),
+                    "Raise Elevator" to RaiseElevatorCommand(elevator),
+                    "Lower Elevator" to LowerElevatorCommand(elevator),
+                    "Correct Elevator" to CorrectElevatorCommand(elevator),
+                    "Hold Elevator" to HoldElevatorCommand(elevator),
+                ),
+            )
+        } else {
+            NamedCommands.registerCommands(
+                mapOf(
+                    "Shoot Coral" to InstantCommand({ println("Shoot Coral") }),
+                    "Intake Coral" to InstantCommand({ println("Intake Coral") }),
+                    "Raise Elevator" to InstantCommand({ println("Raise Elevator") }),
+                    "Lower Elevator" to InstantCommand({ println("Lower Elevator") }),
+                    "Correct Elevator" to InstantCommand({ println("Correct Elevator") }),
+                    "Hold Elevator" to InstantCommand({ println("Hold Elevator") }),
+                ),
+            )
+        }
 
         autoChooser = AutoBuilder.buildAutoChooser()
         SmartDashboard.putData("Auto choices", autoChooser)

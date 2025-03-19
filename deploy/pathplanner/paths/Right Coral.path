@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.760725126827771,
-        "y": 2.0662702011985377
+        "x": 6.85973827734249,
+        "y": 2.04156613222464
       },
       "isLocked": false,
       "linkedName": "Right Start Point"
     },
     {
       "anchor": {
-        "x": 5.168835616438356,
-        "y": 2.868022260273973
+        "x": 5.303001669424551,
+        "y": 2.897452618634259
       },
       "prevControl": {
-        "x": 5.480040617566821,
-        "y": 2.7379633297556674
+        "x": 5.5292220326691774,
+        "y": 2.7903459932714196
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right First Coral"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 121.42956561483854
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
