@@ -20,7 +20,6 @@ class LowerElevatorCommand(
         }
 
         elevator.desiredStage -= 1
-
     }
 
     override fun execute() {

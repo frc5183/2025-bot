@@ -148,7 +148,11 @@ object Controls {
          */
 
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
-          CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))) // First correct the elevator, then shoot the coral while holding the elevator.
+            CorrectElevatorCommand(elevator)
+                .andThen(
+                    ShootCoralCommand(coralSubsystem)
+                        .raceWith(HoldElevatorCommand(elevator)),
+                ), // First correct the elevator, then shoot the coral while holding the elevator.
         )
 
         // Reset Coral State

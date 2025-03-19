@@ -16,7 +16,7 @@ class CorrectElevatorCommand(
     }
 
     override fun execute() {
-            elevator.raiseElevator(Config.ELEVATOR_MOVEMENT_SPEED)
+        elevator.raiseElevator(Config.ELEVATOR_MOVEMENT_SPEED)
     }
 
     override fun end(interrupted: Boolean) {
