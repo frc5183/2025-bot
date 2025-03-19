@@ -18,14 +18,25 @@ class LowerElevatorCommand(
             invalidStage = true
             return
         }
-        elevator.desiredStage -= 1
 
-        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED / 2)
+        elevator.desiredStage -= 1
+    }
+
+    override fun execute() {
+        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED)
     }
 
     override fun end(interrupted: Boolean) {
         elevator.stopElevator()
     }
 
-    override fun isFinished() = elevator.currentStage <= elevator.desiredStage || invalidStage
+    override fun isFinished(): Boolean {
+        if (invalidStage) return true
+
+        if ((elevator.desiredStage <= 0 || elevator.currentStage <= 0) && elevator.bottomLimitSwitch) return true
+
+        if (elevator.desiredStage != 0 && elevator.currentStage != 0) return elevator.currentStage <= elevator.desiredStage
+
+        return false
+    }
 }

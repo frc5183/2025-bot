@@ -115,7 +115,7 @@ object Robot : LoggedRobot() {
                 if (State.mode ==
                     State.Mode.REAL
                 ) {
-                    RealVisionIO(listOf())
+                    RealVisionIO(listOf(DeviceConstants.FRONT_CAMERA))
                 } else {
                     SimulatedVisionIO(listOf())
                 },
@@ -129,6 +129,9 @@ object Robot : LoggedRobot() {
                     SparkMax(
                         DeviceConstants.CLIMBER_CAN,
                         DeviceConstants.CLIMBER_MOTOR_TYPE,
+                    ),
+                    DigitalInput(
+                        DeviceConstants.CLIMBER_LIMIT_SWITCH_ID,
                     ),
                 ),
             ) // todo: simulate this io
@@ -154,7 +157,7 @@ object Robot : LoggedRobot() {
             )
 
         CommandScheduler.getInstance().registerSubsystem(
-            // vision,
+            vision,
             drive,
             climber,
             elevator,
