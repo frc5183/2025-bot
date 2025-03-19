@@ -130,6 +130,9 @@ object Robot : LoggedRobot() {
                         DeviceConstants.CLIMBER_CAN,
                         DeviceConstants.CLIMBER_MOTOR_TYPE,
                     ),
+                    DigitalInput(
+                      DeviceConstants.CLIMBER_LIMIT_SWITCH_ID,
+                    ),
                 ),
             ) // todo: simulate this io
 
