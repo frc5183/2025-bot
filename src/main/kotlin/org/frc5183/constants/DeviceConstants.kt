@@ -29,7 +29,7 @@ object DeviceConstants {
     val FRONT_CAMERA: Camera =
         Camera(
             "Front",
-            Transform3d(Units.Inches.of(6.5), Units.Inches.of(6.0), Units.Inches.of(27.5), Rotation3d(0.0, 0.0, 0.0)),
+            Transform3d(Units.Inches.of(6.5), Units.Inches.of(11.0), Units.Inches.of(27.5), Rotation3d(0.0, 0.0, 0.0)),
             VecBuilder.fill(4.0, 4.0, 8.0),
             VecBuilder.fill(0.5, 0.5, 1.0),
         )
