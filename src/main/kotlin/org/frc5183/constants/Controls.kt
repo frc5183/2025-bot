@@ -82,8 +82,8 @@ object Controls {
         TELEOP_DRIVE_COMMAND =
             TeleopDriveCommand(
                 drive,
-                xInput = { DRIVER.leftY },
-                yInput = { DRIVER.leftX },
+                xInput = { DRIVER.leftX },
+                yInput = { DRIVER.leftY },
                 rotationInput = { DRIVER.rightX },
                 translationCurve =
                     MultiCurve(
