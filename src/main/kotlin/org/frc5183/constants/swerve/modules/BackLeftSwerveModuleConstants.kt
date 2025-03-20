@@ -20,7 +20,7 @@ object BackLeftSwerveModuleConstants : SwerveModuleConstants {
         CANCoderSwerve(16)
 
     override val ABSOLUTE_ENCODER_OFFSET: Angle =
-        Units.Degrees.of(74.883)
+        Units.Degrees.of(72.598)
 
     override val ABSOLUTE_ENCODER_INVERTED: Boolean =
         false
