@@ -19,7 +19,7 @@ class RealElevatorIO(
         get() = Units.Rotations.of((if (Config.ELEVATOR_MOTOR_INVERTED) -1.0 else 1.0) * motor.encoder.position)
 
     override val bottomLimitSwitchTriggered: Boolean
-        get() = !bottomLimitSwitch.get()
+        get() = bottomLimitSwitch.get()
 
     override val topLimitSwitchTriggered: Boolean
         get() = topLimitSwitch.get()
