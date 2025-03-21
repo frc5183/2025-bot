@@ -18,9 +18,9 @@ class DriveElevatorCommand(
 
         if (elevator.speedMovesDown(speed) && elevator.bottomLimitSwitch) {
             elevator.stopElevator()
-            return
+        } else {
+            elevator.runElevator(speed)
         }
-        elevator.runElevator(speed)
     }
 
     override fun isFinished() = false

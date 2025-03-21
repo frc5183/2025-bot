@@ -39,6 +39,7 @@ class RealElevatorIO(
         inputs.motorEncoder = motorEncoder.`in`(Units.Rotations)
         inputs.currentStage = currentStage
         inputs.bottomLimitSwitchTriggered = bottomLimitSwitchTriggered
+        inputs.topLimitSwitchTriggered = topLimitSwitchTriggered
     }
 
     override fun runElevator(speed: Double) {

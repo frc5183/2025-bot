@@ -12,6 +12,7 @@ class RealClimberIO(
 
     override fun updateInputs(inputs: ClimberIO.ClimberIOInputs) {
         inputs.motorSpeed = motor.get()
+        inputs.limitSwitch = limitSwitchTriggered
     }
 
     override fun runMotor(speed: Double) {

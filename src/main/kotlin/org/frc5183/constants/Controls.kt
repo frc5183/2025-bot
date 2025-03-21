@@ -9,6 +9,7 @@ import org.frc5183.commands.climber.DriveClimberCommand
 import org.frc5183.commands.climber.PullClimberCommand
 import org.frc5183.commands.coral.IntakeCoralCommand
 import org.frc5183.commands.coral.ShootCoralCommand
+import org.frc5183.commands.coral.TeleopIntakeCoralCommand
 import org.frc5183.commands.drive.AimCommand
 import org.frc5183.commands.drive.TeleopDriveCommand
 import org.frc5183.commands.elevator.*
@@ -136,7 +137,7 @@ object Controls {
             .debounce(
                 BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS),
                 Debouncer.DebounceType.kFalling,
-            ).onTrue(IntakeCoralCommand(coralSubsystem))
+            ).onTrue(TeleopIntakeCoralCommand(coralSubsystem))
         /*
         OPERATOR
             .a()
@@ -148,11 +149,11 @@ object Controls {
          */
 
         OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
-            CorrectElevatorCommand(elevator)
-                .andThen(
-                    ShootCoralCommand(coralSubsystem)
-                        .raceWith(HoldElevatorCommand(elevator)),
-                ), // First correct the elevator, then shoot the coral while holding the elevator.
+            CorrectElevatorCommand(elevator).andThen(ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator))), // Shoot the coral while holding the elevator.
+        )
+
+        OPERATOR.a().debounce(BUTTON_DEBOUNCE_TIME.toDouble(DurationUnit.SECONDS), Debouncer.DebounceType.kFalling).onTrue(
+            ShootCoralCommand(coralSubsystem).raceWith(HoldElevatorCommand(elevator)), // Shoot the coral while holding the elevator.
         )
 
         // Reset Coral State
@@ -169,7 +170,7 @@ object Controls {
         OPERATOR.rightStick().toggleOnTrue(
             DriveClimberCommand(
                 climber,
-                input = { OPERATOR.rightY },
+                input = { -OPERATOR.rightY },
                 inputCurve =
                     MultiCurve(
                         listOf(

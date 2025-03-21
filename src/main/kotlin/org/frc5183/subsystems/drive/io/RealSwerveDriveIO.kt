@@ -3,15 +3,23 @@ package org.frc5183.subsystems.drive.io
 import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.geometry.Pose2d
 import edu.wpi.first.math.geometry.Translation2d
+import edu.wpi.first.math.geometry.Translation3d
 import edu.wpi.first.math.kinematics.ChassisSpeeds
 import edu.wpi.first.math.numbers.N1
 import edu.wpi.first.math.numbers.N3
+import edu.wpi.first.units.Units
+import edu.wpi.first.units.measure.AngularVelocity
 import org.frc5183.constants.swerve.SwerveConstants
+import org.littletonrobotics.junction.Logger
 import swervelib.SwerveDrive
 
 // todo see SimulatedSwerveDriveIO
 open class RealSwerveDriveIO : SwerveDriveIO {
     val drive: SwerveDrive = SwerveConstants.YAGSL_DRIVE
+
+    var maxAccelX: Double = 0.0
+    var maxAccelY: Double = 0.0
+    var maxAngularVelocity: AngularVelocity = Units.DegreesPerSecond.of(0.0)
 
     init {
         drive.setHeadingCorrection(false); // Should only be enabled when controlling the robot by angle.

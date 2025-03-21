@@ -13,14 +13,16 @@ class ClimberSubsystem(
         io.updateInputs(ioInputs)
         Logger.processInputs("Climber", ioInputs)
 
-        if (io.limitSwitchTriggered) stopMotor()
+        if (io.limitSwitchTriggered && ioInputs.motorSpeed < 0) stopMotor()
     }
 
     /**
      * Run the motor at the given [speed].
      * @param speed The speed to run the motor at, from [-1, 1].
      */
-    fun runMotor(speed: Double) = io.runMotor(speed)
+    fun runMotor(speed: Double) {
+        if (!io.limitSwitchTriggered && speed > 0) io.runMotor(speed)
+    }
 
     /**
      * Stop the motor.

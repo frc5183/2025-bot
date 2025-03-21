@@ -58,7 +58,7 @@ class ElevatorSubsystem(
             if (motorRunningDown) stopElevator()
         }
 
-        if (topLimitSwitch && motorRunningUp) stopElevator()
+        //if (topLimitSwitch && motorRunningUp) stopElevator()
     }
 
     /**
@@ -66,8 +66,16 @@ class ElevatorSubsystem(
      */
     fun runElevator(speed: Double) {
         if (!bottomLimitSwitch) io.runElevator(speed)
+        if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
+
+        /*
+        if (!bottomLimitSwitch && !topLimitSwitch) io.runElevator(speed)
 
         if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
+
+        if (speedMovesDown(speed) && topLimitSwitch) io.runElevator(speed)
+
+         */
     }
 
     /**

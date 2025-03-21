@@ -95,30 +95,23 @@ object PhysicalConstants {
          * (W/G) * (π*d)
          * where W = free speed (rev/s), G = gear ratio, d = wheel diameter (meters)
          */
-        Units.MetersPerSecond.of(
-            (
-                Units.RadiansPerSecond
-                    .of(DRIVE_MOTOR_TYPE.freeSpeedRadPerSec)
-                    .`in`(Units.RevolutionsPerSecond)
-                    .div(DRIVE_GEAR_RATIO)
-            ) *
-                (Math.PI * WHEEL_DIAMETER.`in`(Units.Meters)),
+        Units.MetersPerSecond.of(10.0,
         )
 
     /**
      * The maximum [LinearAcceleration] of the robot.
      */
-    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(8.0)
+    val MAX_ACCELERATION: LinearAcceleration = Units.MetersPerSecondPerSecond.of(20.0)
 
     /**
      * The maximum [AngularVelocity] of the robot.
      */
-    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(360.0)
+    val MAX_ANGULAR_VELOCITY: AngularVelocity = Units.DegreesPerSecond.of(360.0 * 8)
 
     /**
      * The maximum [AngularAcceleration] of the robot.
      */
-    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.DegreesPerSecondPerSecond.of(360.0)
+    val MAX_ANGULAR_ACCELERATION: AngularAcceleration = Units.DegreesPerSecondPerSecond.of(360.0 * 16)
 
     // </editor-fold>
 }
