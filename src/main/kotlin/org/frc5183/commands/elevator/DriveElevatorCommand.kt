@@ -18,6 +18,8 @@ class DriveElevatorCommand(
 
         if (elevator.speedMovesDown(speed) && elevator.bottomLimitSwitch) {
             elevator.stopElevator()
+        } else if (elevator.speedMovesUp(speed) && elevator.topLimitSwitch) {
+            elevator.stopElevator()
         } else {
             elevator.runElevator(speed)
         }

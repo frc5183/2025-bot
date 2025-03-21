@@ -23,7 +23,7 @@ class LowerElevatorCommand(
     }
 
     override fun execute() {
-        elevator.lowerElevator(Config.ELEVATOR_MOVEMENT_SPEED)
+        elevator.lowerElevator(0.3)
     }
 
     override fun end(interrupted: Boolean) {

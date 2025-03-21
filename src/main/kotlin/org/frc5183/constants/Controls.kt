@@ -214,7 +214,7 @@ object Controls {
                                     { input: Double -> abs(input) > ROTATION_DEADBAND } to ELEVATOR_CURVE, // Apply our actual curve.
                                 ),
                             ),
-                            LimitedCurve(-1.0, 1.0), // Clamp the output to [-1, 1]
+                            LimitedCurve(-0.5, 0.5), // Clamp the output to [-1, 1]
                         ),
                     ),
             )

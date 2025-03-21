@@ -58,24 +58,16 @@ class ElevatorSubsystem(
             if (motorRunningDown) stopElevator()
         }
 
-        //if (topLimitSwitch && motorRunningUp) stopElevator()
+        if (topLimitSwitch && motorRunningUp) stopElevator()
     }
 
     /**
      * Runs the elevator at [speed]
      */
     fun runElevator(speed: Double) {
-        if (!bottomLimitSwitch) io.runElevator(speed)
-        if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
-
-        /*
         if (!bottomLimitSwitch && !topLimitSwitch) io.runElevator(speed)
-
         if (speedMovesUp(speed) && bottomLimitSwitch) io.runElevator(speed)
-
         if (speedMovesDown(speed) && topLimitSwitch) io.runElevator(speed)
-
-         */
     }
 
     /**
@@ -113,5 +105,5 @@ class ElevatorSubsystem(
      * @param speed The speed to check.
      * @return Whether the speed will move the elevator up.
      */
-    fun speedMovesUp(speed: Double): Boolean = !speedMovesDown(speed)
+    fun speedMovesUp(speed: Double): Boolean = speed < 0 && Config.ELEVATOR_MOTOR_INVERTED || speed > 0 && !Config.ELEVATOR_MOTOR_INVERTED
 }

@@ -21,7 +21,7 @@ object Config {
         )
     val ELEVATOR_MAX_ALLOWED_DRIFT: Angle = Units.Degrees.of(1.0)
     const val ELEVATOR_MOTOR_INVERTED: Boolean = true
-    const val ELEVATOR_MOVEMENT_SPEED = 0.3
+    const val ELEVATOR_MOVEMENT_SPEED = 0.4
     const val ELEVATOR_HOLD_SPEED = 0.05
 
     val CORAL_SHOOT_TIME: Duration = 1.seconds
@@ -35,7 +35,7 @@ object Config {
     const val CORAL_INTAKE_SPEED: Double = 0.5
     const val CORAL_SHOOT_SPEED: Double = 1.0
 
-    const val VISION_POSE_ESTIMATION = false
+    const val VISION_POSE_ESTIMATION = true
     val FIELD_LAYOUT: AprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded)
     val BREAK_TIME_AFTER_DISABLE: Duration = 1.seconds
 }
