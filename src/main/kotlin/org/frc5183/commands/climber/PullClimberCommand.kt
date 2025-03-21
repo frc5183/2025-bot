@@ -20,4 +20,6 @@ class PullClimberCommand(
     override fun end(interrupted: Boolean) {
         climber.stopMotor()
     }
+
+    override fun isFinished(): Boolean = climber.limitSwitch
 }

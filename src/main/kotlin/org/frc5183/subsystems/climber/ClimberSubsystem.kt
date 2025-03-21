@@ -7,6 +7,9 @@ import org.littletonrobotics.junction.Logger
 class ClimberSubsystem(
     val io: ClimberIO,
 ) : Subsystem {
+    val limitSwitch: Boolean
+        get() = io.limitSwitchTriggered
+
     val ioInputs: ClimberIO.ClimberIOInputs = ClimberIO.ClimberIOInputs()
 
     override fun periodic() {
@@ -21,7 +24,9 @@ class ClimberSubsystem(
      * @param speed The speed to run the motor at, from [-1, 1].
      */
     fun runMotor(speed: Double) {
-        if (!io.limitSwitchTriggered && speed > 0) io.runMotor(speed)
+        if (!io.limitSwitchTriggered) io.runMotor(speed)
+
+        if (io.limitSwitchTriggered && speed > 0) io.runMotor(speed)
     }
 
     /**
